@@ -1,0 +1,64 @@
+{
+  "system": {
+    "platform": "Linux-6.8.0-52-generic-x86_64-with-glibc2.35",
+    "python_version": "3.13.9",
+    "architecture": "x86_64"
+  },
+  "nvidia_smi": {
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 3080 Ti",
+        "driver_version": "565.57.01",
+        "memory_total_mb": 12288,
+        "compute_capability": "8.6"
+      }
+    ]
+  },
+  "cuda_toolkit": {
+    "nvcc_version": "12.6",
+    "nvcc_path": "/usr/local/cuda/bin/nvcc",
+    "cuda_home": "Not set",
+    "cuda_libraries": {
+      "libcudart.so": "/usr/local/cuda/lib64/libcudart.so",
+      "libcublas.so": "/usr/local/cuda/lib64/libcublas.so",
+      "libcudnn.so": "Not found"
+    }
+  },
+  "pytorch": {
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_available": true,
+    "cuda_version": "12.1",
+    "cudnn_version": 90100,
+    "cudnn_enabled": true,
+    "device_count": 1,
+    "devices": [
+      {
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 3080 Ti",
+        "compute_capability": "8.6",
+        "total_memory_gb": 11.64825439453125,
+        "multi_processor_count": 80
+      }
+    ]
+  },
+  "profiling_tools": {
+    "nsys": true,
+    "nsys_version": "NVIDIA Nsight Systems version 2024.5.1.113-245134619542v0",
+    "ncu": false,
+    "ncu_version": "Not installed",
+    "torch_profiler": true
+  },
+  "optional_packages": {
+    "cupy": {
+      "installed": false
+    },
+    "triton": {
+      "installed": false
+    },
+    "pycuda": {
+      "installed": true,
+      "version": "Available"
+    }
+  }
+}

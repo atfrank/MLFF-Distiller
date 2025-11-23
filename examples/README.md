@@ -9,11 +9,11 @@ This directory contains example scripts and notebooks demonstrating how to use M
 - `data_generation_example.py` - Generate training data from teacher models (Coming in M2)
 
 ### Model Usage
-- `teacher_inference_example.py` - Use teacher model wrappers (Coming in M1)
+- `teacher_wrapper_usage.py` - **NEW**: Complete guide to using teacher model wrappers (OrbCalculator, FeNNolCalculator)
 - `student_inference_example.py` - Use distilled student models (Coming in M3)
 
 ### Training
-- `train_example.py` - Train a student model (Coming in M4)
+- `train_example.py` - Train a student model with full monitoring and checkpointing (Available in M1)
 - `evaluate_model.py` - Evaluate model accuracy (Coming in M4)
 
 ### Optimization
