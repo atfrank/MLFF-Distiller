@@ -144,17 +144,18 @@ class OrbCalculator(Calculator):
             ) from e
 
         # Map model names to pretrained model functions
+        # Note: compile=False required for Python 3.13+ (torch.compile not supported)
         model_loaders = {
-            "orb-v1": lambda: pretrained.orb_v1(device=self.device),
-            "orb-v2": lambda: pretrained.orb_v2(device=self.device),
+            "orb-v1": lambda: pretrained.orb_v1(device=self.device, compile=False),
+            "orb-v2": lambda: pretrained.orb_v2(device=self.device, compile=False),
             "orb-v3": lambda: pretrained.orb_v3_conservative_inf_omat(
-                device=self.device, precision=self.precision
+                device=self.device, precision=self.precision, compile=False
             ),
             "orb-v3-conservative-inf-omat": lambda: pretrained.orb_v3_conservative_inf_omat(
-                device=self.device, precision=self.precision
+                device=self.device, precision=self.precision, compile=False
             ),
             "orb-v3-strict-inf-omat": lambda: pretrained.orb_v3_strict_inf_omat(
-                device=self.device, precision=self.precision
+                device=self.device, precision=self.precision, compile=False
             ),
         }
 
