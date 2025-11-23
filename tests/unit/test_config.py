@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.training.config import (
+from mlff_distiller.training.config import (
     CheckpointConfig,
     LossConfig,
     LoggingConfig,

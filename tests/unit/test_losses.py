@@ -7,7 +7,7 @@ Tests ForceFieldLoss, EnergyLoss, ForceLoss, and numerical stability.
 import pytest
 import torch
 
-from src.training.losses import (
+from mlff_distiller.training.losses import (
     DistillationLoss,
     EnergyLoss,
     ForceFieldLoss,

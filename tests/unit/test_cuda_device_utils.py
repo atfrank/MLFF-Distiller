@@ -7,7 +7,7 @@ Tests device detection, memory management, and GPU utility functions.
 import pytest
 import torch
 
-from src.cuda.device_utils import (
+from mlff_distiller.cuda.device_utils import (
     GPUInfo,
     check_memory_leak,
     cuda_memory_tracker,

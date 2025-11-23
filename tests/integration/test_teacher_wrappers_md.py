@@ -64,7 +64,7 @@ class TestOrbCalculatorMDIntegration:
             mock_calc.results = {}
             mock_orb_calc.return_value = mock_calc
 
-            from src.models.teacher_wrappers import OrbCalculator
+            from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
             yield OrbCalculator(model_name="orb-v2", device="cpu")
 
@@ -196,7 +196,7 @@ class TestFeNNolCalculatorMDIntegration:
             mock_calc.results = {}
             mock_fennix.from_pretrained.return_value = mock_calc
 
-            from src.models.teacher_wrappers import FeNNolCalculator
+            from mlff_distiller.models.teacher_wrappers import FeNNolCalculator
 
             yield FeNNolCalculator(model_name="ani-2x", device="cpu")
 
@@ -280,7 +280,7 @@ class TestDropInReplacementScenario:
             mock_calc.results = {}
             mock_orb_calc.return_value = mock_calc
 
-            from src.models.teacher_wrappers import OrbCalculator
+            from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
             yield OrbCalculator(model_name="orb-v2", device="cpu")
 
@@ -340,7 +340,7 @@ class TestRealOrbCalculator:
     @pytest.mark.slow
     def test_real_orb_calculator_simple_molecule(self):
         """Test real OrbCalculator with a simple molecule (slow test)."""
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         try:
             calc = OrbCalculator(model_name="orb-v2", device="cpu")
@@ -375,7 +375,7 @@ class TestRealFeNNolCalculator:
     @pytest.mark.slow
     def test_real_fennol_calculator_simple_molecule(self):
         """Test real FeNNolCalculator with a simple molecule (slow test)."""
-        from src.models.teacher_wrappers import FeNNolCalculator
+        from mlff_distiller.models.teacher_wrappers import FeNNolCalculator
 
         try:
             # This assumes ANI-2x is available as a pretrained model

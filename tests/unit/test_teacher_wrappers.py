@@ -46,7 +46,7 @@ class TestOrbCalculatorInterface(unittest.TestCase):
         # Mock model loader
         self.mock_pretrained.orb_v2.return_value = MagicMock()
 
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         self.calc = OrbCalculator(model_name="orb-v2", device="cpu")
 
@@ -114,7 +114,7 @@ class TestOrbCalculatorInitialization(unittest.TestCase):
 
     def test_initialization_orb_v1(self):
         """Test initialization with orb-v1."""
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         calc = OrbCalculator(model_name="orb-v1", device="cpu")
         # Check that calculator was created successfully
@@ -123,7 +123,7 @@ class TestOrbCalculatorInitialization(unittest.TestCase):
 
     def test_initialization_orb_v2(self):
         """Test initialization with orb-v2."""
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         calc = OrbCalculator(model_name="orb-v2", device="cpu")
         self.assertEqual(calc.model_name, "orb-v2")
@@ -131,7 +131,7 @@ class TestOrbCalculatorInitialization(unittest.TestCase):
 
     def test_initialization_orb_v3(self):
         """Test initialization with orb-v3."""
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         calc = OrbCalculator(model_name="orb-v3", device="cpu")
         self.assertEqual(calc.model_name, "orb-v3")
@@ -139,7 +139,7 @@ class TestOrbCalculatorInitialization(unittest.TestCase):
 
     def test_invalid_model_name(self):
         """Test that invalid model name raises ValueError."""
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         with self.assertRaises(ValueError) as context:
             OrbCalculator(model_name="invalid-model", device="cpu")
@@ -175,7 +175,7 @@ class TestOrbCalculatorCalculations(unittest.TestCase):
             ORBCalculator=MagicMock(return_value=mock_calc_instance)
         )
 
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         self.calc = OrbCalculator(model_name="orb-v2", device="cpu")
         self.atoms = Atoms(
@@ -219,7 +219,7 @@ class TestFeNNolCalculatorInterface(unittest.TestCase):
         sys.modules["fennol"] = MagicMock()
         sys.modules["fennol.calculators"] = MagicMock(FENNIXCalculator=mock_fennix_class)
 
-        from src.models.teacher_wrappers import FeNNolCalculator
+        from mlff_distiller.models.teacher_wrappers import FeNNolCalculator
 
         self.calc = FeNNolCalculator(model_name="ani-2x", device="cpu")
 
@@ -263,7 +263,7 @@ class TestFeNNolCalculatorInitialization(unittest.TestCase):
 
     def test_requires_model_path_or_name(self):
         """Test that initialization requires either model_path or model_name."""
-        from src.models.teacher_wrappers import FeNNolCalculator
+        from mlff_distiller.models.teacher_wrappers import FeNNolCalculator
 
         with self.assertRaises(ValueError) as context:
             FeNNolCalculator(device="cpu")
@@ -310,7 +310,7 @@ class TestDropInCompatibility(unittest.TestCase):
 
     def test_orb_calculator_can_attach_to_atoms(self):
         """Test that OrbCalculator can be attached to Atoms object."""
-        from src.models.teacher_wrappers import OrbCalculator
+        from mlff_distiller.models.teacher_wrappers import OrbCalculator
 
         calc = OrbCalculator(model_name="orb-v2", device="cpu")
         atoms = Atoms("H2", positions=[[0, 0, 0], [0, 0, 0.74]])
@@ -320,7 +320,7 @@ class TestDropInCompatibility(unittest.TestCase):
 
     def test_fennol_calculator_can_attach_to_atoms(self):
         """Test that FeNNolCalculator can be attached to Atoms object."""
-        from src.models.teacher_wrappers import FeNNolCalculator
+        from mlff_distiller.models.teacher_wrappers import FeNNolCalculator
 
         calc = FeNNolCalculator(model_name="ani-2x", device="cpu")
         atoms = Atoms("H2O", positions=[[0, 0, 0], [1, 0, 0], [0, 1, 0]])

@@ -13,8 +13,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from src.training import ForceFieldLoss, TrainingConfig, Trainer
-from src.training.config import CheckpointConfig, LoggingConfig, OptimizerConfig, SchedulerConfig
+from mlff_distiller.training import ForceFieldLoss, TrainingConfig, Trainer
+from mlff_distiller.training.config import CheckpointConfig, LoggingConfig, OptimizerConfig, SchedulerConfig
 
 
 class DummyModel(nn.Module):
