@@ -9,30 +9,38 @@ This document tracks the major milestones for the MLFF Distiller project, includ
 ### Objectives
 - Establish project infrastructure
 - Set up development environment
-- Integrate teacher models
-- Create baseline benchmarks
+- Integrate teacher models with ASE Calculator interface
+- Create baseline MD simulation benchmarks
+- Define drop-in replacement requirements
 
 ### Key Deliverables
 1. Repository structure with all directories and configuration files
 2. CI/CD pipelines (testing, linting, benchmarking)
-3. Teacher model wrappers (Orb-models, FeNNol-PMC)
-4. Baseline inference pipeline
-5. Initial performance benchmarks
-6. Development documentation
+3. Teacher model wrappers implementing ASE Calculator interface
+4. Baseline inference pipeline for single and batched inference
+5. MD simulation benchmarks (not just single inference)
+6. Interface compatibility test framework
+7. Development documentation
 
 ### Success Criteria
 - [ ] All agents can clone, install, and run tests successfully
 - [ ] Teacher models load and produce valid outputs
-- [ ] Baseline benchmarks established for inference speed, accuracy
+- [ ] Teacher wrappers implement ASE Calculator interface correctly
+- [ ] Baseline benchmarks established for:
+  - Single inference latency
+  - MD trajectory performance (1000+ steps)
+  - Memory usage during MD runs
+  - Energy conservation in NVE simulations
 - [ ] CI/CD runs automatically on all PRs
 - [ ] Project board is set up and populated with initial issues
+- [ ] Interface compatibility requirements documented
 
 ### Agent Assignments
-- **Data Pipeline Engineer**: Set up data loading infrastructure
-- **ML Architecture Designer**: Analyze teacher model architectures
+- **Data Pipeline Engineer**: Set up data loading infrastructure compatible with ASE Atoms format
+- **ML Architecture Designer**: Analyze teacher model architectures, implement ASE Calculator interface
 - **Distillation Training Engineer**: Create baseline training framework
-- **CUDA Optimization Engineer**: Set up CUDA development environment and profiling tools
-- **Testing & Benchmark Engineer**: Configure pytest, create benchmark framework
+- **CUDA Optimization Engineer**: Set up CUDA development environment, profile MD simulation bottlenecks
+- **Testing & Benchmark Engineer**: Configure pytest, create MD simulation benchmark framework
 
 ---
 
@@ -74,25 +82,30 @@ This document tracks the major milestones for the MLFF Distiller project, includ
 **Status**: Not Started
 
 ### Objectives
-- Design efficient student model architectures
-- Implement teacher-student interfaces
+- Design efficient student model architectures optimized for repeated MD inference
+- Implement drop-in replacement interfaces (ASE Calculator)
 - Create model checkpointing and loading
-- Validate architectural choices
+- Validate architectural choices for MD workloads
 
 ### Key Deliverables
-1. Student model architecture implementations (2-3 variants)
-2. Teacher model wrapper with consistent API
-3. Model factory and registry system
-4. Checkpoint management utilities
-5. Architecture comparison benchmarks
-6. Model documentation
+1. Student model architecture implementations (2-3 variants) optimized for low latency
+2. ASE Calculator wrapper for student models (drop-in compatible)
+3. Teacher model wrapper with ASE Calculator interface
+4. Model factory and registry system
+5. Architecture comparison benchmarks on MD trajectories
+6. Interface compatibility validation
+7. Model documentation with MD usage examples
 
 ### Success Criteria
 - [ ] Student models are 3-5x smaller than teacher models
-- [ ] All models accept standardized input format
-- [ ] Forward pass completes without errors on test data
+- [ ] All models implement ASE Calculator interface correctly
+- [ ] Student models work as drop-in replacements in existing MD scripts
+- [ ] All models accept same input format as teacher models (ASE Atoms objects)
+- [ ] Forward pass optimized for minimal latency (not just throughput)
 - [ ] Model serialization and loading works correctly
 - [ ] Initial inference speed shows 2x improvement over teacher
+- [ ] Memory footprint suitable for long MD trajectories
+- [ ] Interface compatibility tests pass 100%
 
 ### Agent Assignments
 - **ML Architecture Designer**: Lead - design and implement student architectures
@@ -141,25 +154,30 @@ This document tracks the major milestones for the MLFF Distiller project, includ
 **Status**: Not Started
 
 ### Objectives
-- Optimize inference speed with CUDA kernels
-- Reduce memory footprint
-- Implement batched inference
-- Achieve 5-10x speedup target
+- Optimize inference latency for MD simulation workloads (millions of repeated calls)
+- Reduce memory footprint for long MD trajectories
+- Implement efficient batched inference for parallel MD
+- Achieve 5-10x speedup target on MD trajectories
 
 ### Key Deliverables
-1. Custom CUDA kernels for critical operations
-2. Memory-optimized inference engine
-3. Batched inference implementation
-4. Torch.compile optimizations
-5. Performance profiling reports
-6. Optimization documentation
+1. Custom CUDA kernels for critical operations (minimize latency, not just throughput)
+2. Memory-optimized inference engine (minimal per-call overhead)
+3. Batched inference implementation for parallel MD simulations
+4. Torch.compile optimizations with focus on repeated inference
+5. Performance profiling reports for MD workloads
+6. MD-specific optimization documentation
 
 ### Success Criteria
-- [ ] Achieve 5-10x faster inference than teacher models
+- [ ] Achieve 5-10x faster inference than teacher models on single inference
+- [ ] Achieve 5-10x faster total time on MD trajectories (1M steps)
+- [ ] Latency per inference call minimized (not just throughput)
 - [ ] Memory usage < 2GB for typical system sizes
-- [ ] Batched inference scales linearly with batch size
+- [ ] Memory footprint stable during long MD runs (no leaks)
+- [ ] Batched inference scales linearly with batch size (for parallel MD)
 - [ ] No accuracy degradation from optimizations
+- [ ] Energy conservation maintained in NVE MD runs
 - [ ] Benchmarks on multiple GPU architectures (V100, A100, etc.)
+- [ ] Performance maintained after millions of inference calls
 
 ### Agent Assignments
 - **CUDA Optimization Engineer**: Lead - implement all CUDA optimizations
@@ -174,26 +192,33 @@ This document tracks the major milestones for the MLFF Distiller project, includ
 **Status**: Not Started
 
 ### Objectives
-- Comprehensive testing of all components
-- Package for distribution
-- Create deployment documentation
+- Comprehensive testing of all components including MD simulations
+- Validate drop-in replacement functionality
+- Package for distribution with ASE and LAMMPS integration
+- Create deployment documentation for MD users
 - Prepare release
 
 ### Key Deliverables
-1. Complete test suite (unit + integration + end-to-end)
-2. Performance regression test suite
-3. Python package build and distribution
-4. User documentation and tutorials
-5. Example notebooks and scripts
-6. Release notes and changelog
+1. Complete test suite (unit + integration + end-to-end + MD trajectory tests)
+2. Interface compatibility test suite (ASE Calculator, LAMMPS pair_style)
+3. Performance regression test suite for MD workloads
+4. Python package build and distribution
+5. User documentation and MD simulation tutorials
+6. Example MD simulation scripts (ASE, LAMMPS)
+7. Drop-in replacement validation tests
+8. Release notes and changelog
 
 ### Success Criteria
 - [ ] Test coverage > 80% across all modules
 - [ ] All integration tests pass
-- [ ] Package installable via pip
-- [ ] Documentation covers all major use cases
-- [ ] At least 5 example workflows provided
-- [ ] Performance benchmarks documented and reproducible
+- [ ] All interface compatibility tests pass (ASE, LAMMPS)
+- [ ] Drop-in replacement validated with existing MD scripts (no modifications required)
+- [ ] MD trajectory tests confirm energy conservation and stability
+- [ ] Package installable via pip with proper ASE/LAMMPS integration
+- [ ] Documentation covers all major MD use cases
+- [ ] At least 5 example MD workflows provided (ASE NVE, NVT, NPT, LAMMPS)
+- [ ] Performance benchmarks documented and reproducible on MD trajectories
+- [ ] User can replace teacher model with student model with 1-line code change
 
 ### Agent Assignments
 - **Testing & Benchmark Engineer**: Lead - comprehensive testing

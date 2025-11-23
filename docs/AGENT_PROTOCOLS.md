@@ -44,25 +44,28 @@ Lead Coordinator
 ### 2. ML Architecture Designer
 
 **Primary Responsibilities**:
-- Student model architecture design
-- Teacher model integration and analysis
-- Model component interfaces
-- Architecture optimization for performance
-- Research and prototyping new architectures
+- Student model architecture design optimized for MD simulation latency
+- Teacher model integration with ASE Calculator interface (drop-in compatibility)
+- Model component interfaces following ASE and LAMMPS standards
+- Architecture optimization for repeated inference performance
+- Research and prototyping new architectures suitable for MD workloads
+- **CRITICAL**: Ensure all models are drop-in replacements for teacher models
 
-**Key Skills**: PyTorch, neural architecture design, graph neural networks, equivariant networks
+**Key Skills**: PyTorch, neural architecture design, graph neural networks, equivariant networks, ASE Calculator interface, MD simulation requirements
 
 **Typical Issues**:
 - `[Architecture] [M1] Analyze teacher model architectures`
-- `[Architecture] [M3] Design student model architecture v1`
-- `[Architecture] [M3] Implement teacher-student interface`
-- `[Architecture] [M3] Benchmark architecture variants`
+- `[Architecture] [M1] Implement ASE Calculator interface for teacher models`
+- `[Architecture] [M3] Design student model architecture v1 optimized for low latency`
+- `[Architecture] [M3] Implement ASE Calculator wrapper for student models`
+- `[Architecture] [M3] Validate drop-in replacement compatibility`
+- `[Architecture] [M3] Benchmark architecture variants on MD trajectories`
 
 **Interfaces**:
-- **To Data Pipeline**: Define input data requirements
-- **To Distillation Training**: Provide model implementations
-- **To CUDA Optimization**: Identify optimization opportunities
-- **To Testing**: Provide model validation criteria
+- **To Data Pipeline**: Define input data requirements (ASE Atoms format)
+- **To Distillation Training**: Provide model implementations with ASE interface
+- **To CUDA Optimization**: Identify optimization opportunities for MD workloads
+- **To Testing**: Provide model validation criteria including interface compatibility
 
 ---
 
@@ -94,24 +97,27 @@ Lead Coordinator
 ### 4. CUDA Optimization Engineer
 
 **Primary Responsibilities**:
-- CUDA kernel development
-- Memory optimization
-- Performance profiling and analysis
-- Inference optimization
-- Batched computation implementation
+- CUDA kernel development focused on latency reduction for MD simulations
+- Memory optimization for long MD trajectories (no leaks, minimal overhead)
+- Performance profiling and analysis on MD workloads (millions of repeated calls)
+- Inference optimization prioritizing single-call latency over throughput
+- Batched computation for parallel MD simulations
+- **CRITICAL**: Optimize for MD use case where models are called millions of times
 
-**Key Skills**: CUDA, C++, PyTorch C++ extensions, performance profiling, GPU architecture
+**Key Skills**: CUDA, C++, PyTorch C++ extensions, performance profiling, GPU architecture, understanding of MD simulation performance requirements
 
 **Typical Issues**:
 - `[CUDA] [M1] Set up CUDA development environment`
-- `[CUDA] [M5] Implement custom CUDA kernels for inference`
-- `[CUDA] [M5] Optimize memory usage`
-- `[CUDA] [M5] Profile and optimize bottlenecks`
+- `[CUDA] [M1] Profile teacher model inference on MD trajectories`
+- `[CUDA] [M5] Implement custom CUDA kernels optimized for low latency`
+- `[CUDA] [M5] Optimize memory usage for long MD runs`
+- `[CUDA] [M5] Minimize per-call overhead for repeated inference`
+- `[CUDA] [M5] Profile and optimize MD simulation bottlenecks`
 
 **Interfaces**:
-- **To ML Architecture**: Request architecture changes for optimization
+- **To ML Architecture**: Request architecture changes for latency optimization
 - **To Distillation Training**: Optimize training performance
-- **To Testing**: Provide optimized models for benchmarking
+- **To Testing**: Provide optimized models for MD benchmarking
 - **To Data Pipeline**: Optimize data loading bottlenecks
 
 ---
@@ -119,26 +125,32 @@ Lead Coordinator
 ### 5. Testing & Benchmark Engineer
 
 **Primary Responsibilities**:
-- Test framework setup
-- Unit and integration tests
-- Benchmark suite development
-- Performance regression detection
-- Validation against teacher models
+- Test framework setup including MD simulation tests
+- Unit, integration, and MD trajectory tests
+- Benchmark suite development for MD workloads (not just single inference)
+- Performance regression detection on MD simulations
+- Validation against teacher models including interface compatibility
+- Drop-in replacement validation tests
+- **CRITICAL**: Validate models work in real MD simulations without script changes
 
-**Key Skills**: pytest, benchmarking, CI/CD, validation metrics
+**Key Skills**: pytest, benchmarking, CI/CD, validation metrics, ASE MD simulations, LAMMPS integration, interface compatibility testing
 
 **Typical Issues**:
 - `[Testing] [M1] Configure pytest and coverage tools`
-- `[Testing] [M1] Create baseline benchmark framework`
+- `[Testing] [M1] Create MD simulation benchmark framework`
+- `[Testing] [M1] Establish baseline MD trajectory benchmarks`
+- `[Testing] [M1] Implement ASE Calculator interface tests`
 - `[Testing] [M2] Implement data validation tests`
-- `[Testing] [M5] Performance regression test suite`
+- `[Testing] [M3] Validate drop-in replacement compatibility`
+- `[Testing] [M5] Performance regression test suite for MD trajectories`
+- `[Testing] [M6] Create LAMMPS integration tests`
 
 **Interfaces**:
 - **To All Agents**: Provide testing requirements and feedback
 - **To Data Pipeline**: Validate data quality
-- **To ML Architecture**: Benchmark model performance
-- **To Distillation Training**: Validate model accuracy
-- **To CUDA Optimization**: Measure optimization impact
+- **To ML Architecture**: Benchmark model performance on MD trajectories, validate interface compatibility
+- **To Distillation Training**: Validate model accuracy in MD simulations
+- **To CUDA Optimization**: Measure optimization impact on MD workloads
 
 ---
 
@@ -394,10 +406,50 @@ Architecture + CUDA work together on optimizing model
 - Document design decisions
 
 ### Performance
-- Benchmark before and after optimizations
-- Document performance characteristics
+- Benchmark before and after optimizations on MD trajectories, not just single inference
+- Document performance characteristics for repeated inference
 - No regressions without justification
 - Profile before optimizing
+- **CRITICAL**: Always test performance on realistic MD workloads (1000+ steps)
+
+### Drop-in Replacement Requirements
+
+**CRITICAL**: These requirements are non-negotiable for project success.
+
+#### Interface Compatibility
+1. **ASE Calculator Interface**:
+   - All models (teacher and student) must implement ASE Calculator interface
+   - Must support all standard Calculator methods: `get_potential_energy()`, `get_forces()`, `get_stress()`
+   - Must work with ASE Atoms objects as input
+   - Must be usable in ASE MD simulations without any script modifications
+
+2. **Input/Output Formats**:
+   - Accept same input formats as teacher models (atomic positions, species, cell)
+   - Produce output in same format and units as teacher models
+   - Handle periodic boundary conditions identically
+   - Support same system size ranges as teacher models
+
+3. **API Consistency**:
+   - Model loading API must match teacher model patterns
+   - Configuration and checkpoint formats should be similar
+   - Error handling should be consistent
+   - Device management (CPU/GPU) should work the same way
+
+#### Testing Requirements
+All interface changes must include:
+- [ ] Unit tests for interface methods
+- [ ] Integration tests with ASE MD simulations
+- [ ] Drop-in replacement validation (replace teacher with student in existing scripts)
+- [ ] Compatibility tests comparing teacher vs student outputs
+- [ ] MD trajectory stability tests (NVE, NVT, NPT)
+
+#### MD Performance Requirements
+All optimizations must:
+- [ ] Maintain performance over millions of repeated calls
+- [ ] Have stable memory usage (no leaks)
+- [ ] Preserve energy conservation in NVE simulations
+- [ ] Work correctly with common MD integrators (Langevin, Verlet, etc.)
+- [ ] Support batched inference for parallel MD
 
 ## Milestone Coordination
 
