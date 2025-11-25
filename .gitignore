@@ -99,3 +99,8 @@ docs/_templates/
 # CUDA compilation
 *.o
 *.cu.o
+
+# External generative models (installed via script)
+external/
+envs/mattergen/
+envs/moldiff/

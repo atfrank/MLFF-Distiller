@@ -32,6 +32,7 @@ class ForceFieldLoss(nn.Module):
         energy_weight: float = 1.0,
         force_weight: float = 100.0,
         stress_weight: float = 0.1,
+        angular_weight: float = 10.0,
         energy_loss_type: Literal["mse", "mae", "huber"] = "mse",
         force_loss_type: Literal["mse", "mae", "huber"] = "mse",
         stress_loss_type: Literal["mse", "mae", "huber"] = "mse",
@@ -45,6 +46,7 @@ class ForceFieldLoss(nn.Module):
             energy_weight: Weight for energy loss component
             force_weight: Weight for force loss component (should be >> energy_weight for MD)
             stress_weight: Weight for stress loss component
+            angular_weight: Weight for angular force loss (directional accuracy)
             energy_loss_type: Loss function type for energy predictions
             force_loss_type: Loss function type for force predictions
             stress_loss_type: Loss function type for stress predictions
@@ -55,6 +57,7 @@ class ForceFieldLoss(nn.Module):
         self.energy_weight = energy_weight
         self.force_weight = force_weight
         self.stress_weight = stress_weight
+        self.angular_weight = angular_weight
         self.huber_delta = huber_delta
         self.reduction = reduction
 
@@ -166,16 +169,51 @@ class ForceFieldLoss(nn.Module):
             losses["force"] = force_loss
             total_loss = total_loss + self.force_weight * force_loss
 
+            # Angular loss (directional accuracy)
+            if self.angular_weight > 0:
+                # Cosine similarity loss: 1 - cos(θ) between force vectors
+                # Normalize force vectors (avoid division by zero)
+                pred_norms = torch.norm(pred_forces, dim=-1, keepdim=True).clamp(min=1e-8)
+                target_norms = torch.norm(target_forces, dim=-1, keepdim=True).clamp(min=1e-8)
+
+                pred_normalized = pred_forces / pred_norms
+                target_normalized = target_forces / target_norms
+
+                # Cosine similarity: dot product of normalized vectors
+                cos_sim = (pred_normalized * target_normalized).sum(dim=-1)
+
+                # Angular loss: 1 - cos(θ), ranges from 0 (parallel) to 2 (antiparallel)
+                if self.reduction == "mean":
+                    angular_loss = (1.0 - cos_sim).mean()
+                elif self.reduction == "sum":
+                    angular_loss = (1.0 - cos_sim).sum()
+                else:
+                    angular_loss = 1.0 - cos_sim
+
+                losses["angular"] = angular_loss
+                total_loss = total_loss + self.angular_weight * angular_loss
+
+                # Angular error in degrees (for monitoring)
+                with torch.no_grad():
+                    # Clamp cos_sim to [-1, 1] to avoid numerical issues with acos
+                    cos_sim_clamped = torch.clamp(cos_sim, -1.0, 1.0)
+                    angular_error_rad = torch.acos(cos_sim_clamped)
+                    angular_error_deg = angular_error_rad * (180.0 / 3.14159265)
+                    losses["angular_error_mean_deg"] = angular_error_deg.mean()
+                    losses["angular_error_max_deg"] = angular_error_deg.max()
+
             # Compute RMSE for monitoring (critical MD metric)
             with torch.no_grad():
                 force_mse = F.mse_loss(pred_forces, target_forces, reduction="mean")
                 losses["force_rmse"] = torch.sqrt(force_mse)
                 losses["force_mae"] = F.l1_loss(pred_forces, target_forces, reduction="mean")
                 # Component-wise RMSE for detailed analysis
-                force_mse_per_component = ((pred_forces - target_forces) ** 2).mean(dim=(0, 1))
-                losses["force_rmse_x"] = torch.sqrt(force_mse_per_component[0])
-                losses["force_rmse_y"] = torch.sqrt(force_mse_per_component[1])
-                losses["force_rmse_z"] = torch.sqrt(force_mse_per_component[2])
+                if pred_forces.dim() >= 2:
+                    force_mse_per_component = ((pred_forces - target_forces) ** 2).mean(dim=0)
+                    if force_mse_per_component.numel() >= 3:
+                        losses["force_rmse_x"] = torch.sqrt(force_mse_per_component[0])
+                        losses["force_rmse_y"] = torch.sqrt(force_mse_per_component[1])
+                        losses["force_rmse_z"] = torch.sqrt(force_mse_per_component[2])
 
         # Stress loss (for NPT simulations)
         if "stress" in predictions and "stress" in targets and self.stress_weight > 0:
@@ -306,18 +344,24 @@ class ForceLoss(nn.Module):
         with torch.no_grad():
             rmse = torch.sqrt(F.mse_loss(pred_forces, target_forces, reduction="mean"))
             mae = F.l1_loss(pred_forces, target_forces, reduction="mean")
-            # Component-wise metrics
-            force_mse_per_component = ((pred_forces - target_forces) ** 2).mean(dim=(0, 1))
 
-        return {
+        result = {
             "total": loss,
             "force": loss,
             "force_rmse": rmse,
             "force_mae": mae,
-            "force_rmse_x": torch.sqrt(force_mse_per_component[0]),
-            "force_rmse_y": torch.sqrt(force_mse_per_component[1]),
-            "force_rmse_z": torch.sqrt(force_mse_per_component[2]),
         }
+
+        # Component-wise metrics (only if forces are 2D)
+        with torch.no_grad():
+            if pred_forces.dim() >= 2:
+                force_mse_per_component = ((pred_forces - target_forces) ** 2).mean(dim=0)
+                if force_mse_per_component.numel() >= 3:
+                    result["force_rmse_x"] = torch.sqrt(force_mse_per_component[0])
+                    result["force_rmse_y"] = torch.sqrt(force_mse_per_component[1])
+                    result["force_rmse_z"] = torch.sqrt(force_mse_per_component[2])
+
+        return result
 
 
 class DistillationLoss(nn.Module):
@@ -422,6 +466,7 @@ def get_loss_function(
     energy_weight: float = 1.0,
     force_weight: float = 100.0,
     stress_weight: float = 0.1,
+    angular_weight: float = 10.0,
     **kwargs,
 ) -> nn.Module:
     """
@@ -432,6 +477,7 @@ def get_loss_function(
         energy_weight: Weight for energy component
         force_weight: Weight for force component
         stress_weight: Weight for stress component
+        angular_weight: Weight for angular (directional) component
         **kwargs: Additional arguments for specific loss functions
 
     Returns:
@@ -442,6 +488,7 @@ def get_loss_function(
             energy_weight=energy_weight,
             force_weight=force_weight,
             stress_weight=stress_weight,
+            angular_weight=angular_weight,
             **kwargs,
         )
     elif loss_type == "energy":
@@ -453,6 +500,7 @@ def get_loss_function(
             energy_weight=energy_weight,
             force_weight=force_weight,
             stress_weight=stress_weight,
+            angular_weight=angular_weight,
         )
         return DistillationLoss(base_loss=base_loss, **kwargs)
     else:
