@@ -1103,6 +1103,9 @@ class StudentForceField(nn.Module):
         """
         Load model from checkpoint.
 
+        Supports both new checkpoints with full model config and legacy checkpoints
+        where model architecture is inferred from state dict.
+
         Args:
             path: Path to checkpoint
             device: Device to load model on
@@ -1110,23 +1113,64 @@ class StudentForceField(nn.Module):
         Returns:
             Loaded model
         """
-        checkpoint = torch.load(path, map_location=device)
+        checkpoint = torch.load(path, map_location=device, weights_only=False)
 
         # Handle backward compatibility: use_torch_cluster not in old checkpoints
-        config = checkpoint['config']
+        config = checkpoint.get('config', {})
         if 'use_torch_cluster' not in config:
             config['use_torch_cluster'] = True  # Default to True
 
+        # Filter config to only include model parameters (not training parameters)
+        # This handles checkpoints that mix training and model config
+        model_params = {
+            'hidden_dim', 'num_interactions', 'num_rbf', 'cutoff',
+            'max_z', 'learnable_rbf', 'use_torch_cluster'
+        }
+        filtered_config = {k: v for k, v in config.items() if k in model_params}
+
+        # If essential model parameters are missing, infer from state dict
+        state_dict = checkpoint['model_state_dict']
+        if 'hidden_dim' not in filtered_config:
+            # Infer from embedding layer shape
+            if 'embedding.weight' in state_dict:
+                filtered_config['hidden_dim'] = state_dict['embedding.weight'].shape[1]
+                logger.debug(f"Inferred hidden_dim={filtered_config['hidden_dim']} from state dict")
+
+        if 'num_rbf' not in filtered_config:
+            # Infer from RBF layer centers shape
+            if 'rbf.centers' in state_dict:
+                filtered_config['num_rbf'] = state_dict['rbf.centers'].shape[0]
+                logger.debug(f"Inferred num_rbf={filtered_config['num_rbf']} from state dict")
+
+        if 'num_interactions' not in filtered_config:
+            # Infer from interaction layer keys
+            interaction_keys = [k for k in state_dict.keys() if k.startswith('interactions.')]
+            if interaction_keys:
+                interaction_nums = set(int(k.split('.')[1]) for k in interaction_keys)
+                filtered_config['num_interactions'] = len(interaction_nums)
+                logger.debug(f"Inferred num_interactions={filtered_config['num_interactions']} from state dict")
+
+        if 'cutoff' not in filtered_config:
+            # Use default cutoff if not specified
+            filtered_config['cutoff'] = 5.0
+            logger.debug(f"Using default cutoff={filtered_config['cutoff']}")
+
+        if 'max_z' not in filtered_config:
+            # Infer from embedding layer size (num_elements = max_z + 1)
+            if 'embedding.weight' in state_dict:
+                filtered_config['max_z'] = state_dict['embedding.weight'].shape[0] - 1
+                logger.debug(f"Inferred max_z={filtered_config['max_z']} from state dict")
+
         # Create model with saved config
-        model = cls(**config)
+        model = cls(**filtered_config)
 
         # Load state dict
-        model.load_state_dict(checkpoint['model_state_dict'])
+        model.load_state_dict(state_dict)
 
         model.to(device)
         logger.info(
             f"Loaded model from {path} "
-            f"({checkpoint['num_parameters']:,} parameters)"
+            f"({checkpoint.get('num_parameters', sum(p.numel() for p in model.parameters())):,} parameters)"
         )
 
         return model

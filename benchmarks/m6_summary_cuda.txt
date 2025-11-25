@@ -1,0 +1,174 @@
+================================================================================
+M6 PERFORMANCE BENCHMARK REPORT
+================================================================================
+Date: 2025-11-25
+Device: NVIDIA GPU (CUDA)
+Test System: 12-atom benzene (C6H6)
+Benchmark Trials: 100 inference, 1000 MD steps
+
+================================================================================
+MODEL SPECIFICATIONS
+================================================================================
+
+| Model         | Parameters | Hidden Dim | Interactions | RBF |
+|---------------|------------|------------|--------------|-----|
+| Original      |    427,292 |        128 |            3 |  20 |
+| Tiny          |     77,203 |         64 |            2 |  12 |
+| Ultra-tiny    |     21,459 |         32 |            2 |  10 |
+
+Compression Ratios:
+  - Tiny vs Original:       5.5x fewer parameters
+  - Ultra-tiny vs Original: 19.9x fewer parameters
+
+================================================================================
+INFERENCE PERFORMANCE (Single Structure, 12 atoms)
+================================================================================
+
+| Model         | Mean (ms) | Std (ms) | Min (ms) | Max (ms) |
+|---------------|-----------|----------|----------|----------|
+| Original      |     0.172 |    0.011 |    0.156 |    0.200 |
+| Tiny          |     0.245 |    0.024 |    0.190 |    0.301 |
+| Ultra-tiny    |     0.294 |    0.034 |    0.240 |    0.355 |
+
+Note: For small molecules (3-12 atoms), inference time is dominated by Python/
+PyTorch dispatch overhead rather than actual computation. The smaller models
+do not show speedup because the GPU is not fully utilized at this scale.
+
+================================================================================
+MD SIMULATION PERFORMANCE (1000 steps, NVE ensemble)
+================================================================================
+
+| Model         | Steps/sec | Time/step (ms) | Wall Time (s) |
+|---------------|-----------|----------------|---------------|
+| Original      |      37.3 |          26.79 |         26.79 |
+| Tiny          |      50.5 |          19.81 |         19.81 |
+| Ultra-tiny    |      47.4 |          21.09 |         21.09 |
+
+MD Speedup (relative to Original):
+  - Tiny:       1.35x faster
+  - Ultra-tiny: 1.27x faster
+
+Note: MD performance shows genuine speedup because it involves repeated
+model evaluations where the computational savings accumulate.
+
+================================================================================
+MEMORY USAGE (GPU)
+================================================================================
+
+| Model         | Model Size (MB) | Peak Memory (MB) | Reserved (MB) |
+|---------------|-----------------|------------------|---------------|
+| Original      |            1.63 |            65.63 |          68.0 |
+| Tiny          |            0.29 |            65.94 |          68.0 |
+| Ultra-tiny    |            0.08 |            66.02 |          68.0 |
+
+Model Size Reduction:
+  - Tiny:       5.5x smaller (0.29 MB vs 1.63 MB)
+  - Ultra-tiny: 19.9x smaller (0.08 MB vs 1.63 MB)
+
+Note: Peak GPU memory is nearly identical because it's dominated by CUDA
+runtime overhead and PyTorch context, not model parameters. The model size
+differences become significant for deployment (disk/download size) and when
+loading multiple models.
+
+================================================================================
+BATCH PROCESSING THROUGHPUT
+================================================================================
+
+| Model         | Batch=1  | Batch=4  | Batch=8  | Batch=16 |
+|---------------|----------|----------|----------|----------|
+| Original      | 3087 s/s |  191 s/s |  220 s/s |  304 s/s |
+| Tiny          | 2110 s/s |  159 s/s |  235 s/s |  354 s/s |
+| Ultra-tiny    | 2386 s/s |  165 s/s |  245 s/s |  326 s/s |
+
+(s/s = structures per second)
+
+Note: Batch processing shows counterintuitive results - larger batches are
+slower per-structure than single structure. This is due to Python overhead
+in the batching implementation and suggests room for optimization.
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1. MODEL SIZE COMPRESSION: Successful
+   - Tiny (77K) achieves 5.5x compression
+   - Ultra-tiny (21K) achieves 19.9x compression
+   - Model file sizes reduced proportionally
+
+2. INFERENCE SPEEDUP: Not observed at small scales
+   - For 3-12 atom molecules, dispatch overhead dominates
+   - All models show similar ~0.2-0.3 ms inference time
+   - Speedup would be visible with larger systems (100+ atoms)
+
+3. MD SIMULATION: Modest speedup observed
+   - Tiny model: 1.35x faster (50.5 vs 37.3 steps/sec)
+   - Ultra-tiny: 1.27x faster (47.4 vs 37.3 steps/sec)
+   - Repeated evaluations accumulate computational savings
+
+4. GPU MEMORY: Dominated by CUDA overhead
+   - All models use ~66 MB peak memory
+   - Actual model parameters are tiny fraction
+   - Memory savings visible in model file size only
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+USE ORIGINAL MODEL (427K) WHEN:
+- Accuracy is paramount
+- Running production MD simulations where accuracy matters
+- Memory is not constrained
+
+USE TINY MODEL (77K) WHEN:
+- Need balance of accuracy and speed
+- Running many independent simulations
+- Deploying to resource-constrained environments
+- 1.35x MD speedup is valuable
+
+USE ULTRA-TINY MODEL (21K) WHEN:
+- Speed is more important than accuracy
+- Running rapid screening of many structures
+- Extremely resource-constrained deployment
+- Model file size matters (0.08 MB vs 1.63 MB)
+
+================================================================================
+ACCURACY VALIDATION STATUS
+================================================================================
+
+Issue #33 confirmed Original Model (427K) PRODUCTION APPROVED:
+- Force R2: 0.9961 (excellent)
+- Force MAE: 0.0151 eV/A (excellent)
+- MD energy drift: 0.0013% (excellent conservation)
+
+Tiny and Ultra-tiny models require separate accuracy validation (Issue #35).
+Use these compact models only for screening/rapid evaluation until accuracy
+is validated.
+
+================================================================================
+QUICK REFERENCE TABLE
+================================================================================
+
+## Performance Summary (CUDA, 12 atoms)
+
+| Model | Params | Inference (ms) | MD (steps/s) | Memory (MB) | Speedup |
+|-------|--------|----------------|--------------|-------------|---------|
+| Original (427K) | 427K | 0.17 | 37.3 | 66 | 1.0x |
+| Tiny (77K) | 77K | 0.25 | 50.5 | 66 | 0.7x |
+| Ultra-tiny (21K) | 21K | 0.29 | 47.4 | 66 | 0.6x |
+
+Note: Inference speedup is negative because small molecules are dominated by
+overhead. MD speedup shows the real computational advantage: Tiny is 1.35x
+faster, Ultra-tiny is 1.27x faster for MD simulations.
+
+================================================================================
+FILES GENERATED
+================================================================================
+
+- benchmarks/m6_performance_results_cuda.json  (raw benchmark data)
+- benchmarks/m6_summary_cuda.txt               (this report)
+- benchmarks/inference_time_vs_size_cuda.png   (visualization)
+- benchmarks/speedup_comparison_cuda.png       (visualization)
+- benchmarks/memory_usage_cuda.png             (visualization)
+- benchmarks/batch_throughput_cuda.png         (visualization)
+
+================================================================================
