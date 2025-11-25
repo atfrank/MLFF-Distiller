@@ -1,0 +1,97 @@
+{
+  "0": {
+    "formula": "C19N2O",
+    "num_atoms": 22,
+    "simulation_steps": 20000,
+    "simulation_time_ps": 10.0,
+    "stability_check": "PASSED",
+    "energy_metrics": {
+      "total_energy_drift_pct": 0.3982389231134785,
+      "max_drift_pct": 0.6025519665628888,
+      "energy_conservation_ratio": 0.9985822526377205,
+      "kinetic_std": 0.2515621652855331,
+      "potential_std": 0.44802575887883866,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "force_metrics": {
+      "skipped": true
+    }
+  },
+  "2": {
+    "formula": "C12N2O",
+    "num_atoms": 15,
+    "simulation_steps": 20000,
+    "simulation_time_ps": 10.0,
+    "stability_check": "PASSED",
+    "energy_metrics": {
+      "total_energy_drift_pct": 0.021064897009579916,
+      "max_drift_pct": 0.04644321782886457,
+      "energy_conservation_ratio": 0.9998465114777636,
+      "kinetic_std": 0.018967061282354463,
+      "potential_std": 0.09534549269439442,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "force_metrics": {
+      "skipped": true
+    }
+  },
+  "4": {
+    "formula": "C22NO2",
+    "num_atoms": 25,
+    "simulation_steps": 20000,
+    "simulation_time_ps": 10.0,
+    "stability_check": "PASSED",
+    "energy_metrics": {
+      "total_energy_drift_pct": -0.19633077284057432,
+      "max_drift_pct": 0.49551417463048425,
+      "energy_conservation_ratio": 0.9991680961256107,
+      "kinetic_std": 0.166719287050808,
+      "potential_std": 0.517273311458198,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "force_metrics": {
+      "skipped": true
+    }
+  },
+  "6": {
+    "formula": "C19FN4O",
+    "num_atoms": 25,
+    "simulation_steps": 20000,
+    "simulation_time_ps": 10.0,
+    "stability_check": "PASSED",
+    "energy_metrics": {
+      "total_energy_drift_pct": 0.28261910048916117,
+      "max_drift_pct": 0.28282963146091605,
+      "energy_conservation_ratio": 0.9988640622643543,
+      "kinetic_std": 0.22939635933618233,
+      "potential_std": 0.29203913453398916,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "force_metrics": {
+      "skipped": true
+    }
+  },
+  "9": {
+    "formula": "C26N3O3",
+    "num_atoms": 32,
+    "simulation_steps": 20000,
+    "simulation_time_ps": 10.0,
+    "stability_check": "PASSED",
+    "energy_metrics": {
+      "total_energy_drift_pct": -0.028860556137051404,
+      "max_drift_pct": 0.555444900577797,
+      "energy_conservation_ratio": 0.9987071132805256,
+      "kinetic_std": 0.32614346044021475,
+      "potential_std": 0.7155051865129002,
+      "passed": true,
+      "threshold": 1.0
+    },
+    "force_metrics": {
+      "skipped": true
+    }
+  }
+}
