@@ -1,0 +1,102 @@
+# Medium-Scale 10K Generation Configuration - Hybrid with RNA
+# Issue #18: Medium-Scale Validation with RNA Integration
+# Distribution: 80% MolDiff + 10% RNA + 10% Benchmark
+
+project_name: "medium_scale_10k_hybrid"
+total_samples: 10000
+
+# Distribution: MolDiff + RNA for diversity validation
+distribution:
+  moldiff_molecules: 8000  # 80% MolDiff
+  rna_structures: 1000     # 10% RNA biomolecules
+  benchmark_traditional: 1000  # 10% validation baseline
+  mattergen_crystals: 0    # Deferred to 120K production phase
+
+# Batch sizes optimized for throughput
+batch_size:
+  moldiff: 100    # Larger batches for throughput
+  rna: 50         # RNA loading is fast (just decompressing PDB)
+  benchmark: 50   # Traditional sampling is fast
+  mattergen: 0    # Not used in this run
+
+# Output configuration
+output_dir: "data/medium_scale_10k_hybrid"
+checkpoint_interval: 1000  # Save checkpoint every 1000 structures
+save_individual_structures: false  # Save disk space, faster I/O
+compress_output: false  # Speed over space during generation
+
+# Teacher model for labeling
+teacher_model: "orb-v2"
+teacher_batch_size: 1  # Orb-v2 limitation (processes one at a time)
+device: "cuda"
+
+# Generation parameters
+moldiff:
+  model_checkpoint: "ckpt/MolDiff.pt"  # Relative to code_path
+  bond_predictor: "ckpt/bondpred.pt"   # Relative to code_path
+  num_atoms_range: [5, 50]
+  element_focus: ["C", "H", "N", "O", "S", "P", "F", "Cl", "Br"]
+  temperature: 1.0
+  environment_path: "envs/moldiff"
+  code_path: "external/MolDiff"
+  # Proven performance: 100% success rate, ~1.6s per molecule
+
+rna:
+  source_path: "/tmp/RNA-NMR-Decoys"
+  num_structures: 1000
+  sampling_strategy: "uniform"  # Sample uniformly across all RNA systems
+  systems: "all"  # Use all 61 RNA systems
+  structures_per_system: 16  # ~1000/61 = 16 structures per system
+  # Proven compatibility: 100% validation success
+  # Size range: 500-1500 atoms (fills gap between small molecules and proteins)
+
+benchmark:
+  source: "qm9_geom_subset"  # Small molecules for comparison
+  fallback_to_random: true
+  criteria: "known_stable"
+  target_size: 1000
+
+# MatterGen disabled for this run
+mattergen:
+  pretrained_name: null
+  environment_path: null
+  code_path: null
+
+# Quality gates
+validation:
+  min_success_rate: 0.95  # 95% teacher labeling success required
+  min_diversity_entropy: 3.0  # Higher diversity with RNA (more elements: C,H,N,O,P)
+  max_outlier_fraction: 0.05  # 5% outliers acceptable
+  energy_range_check: true
+  force_magnitude_check: true
+  max_force_magnitude: 10.0  # eV/Å typical for molecular/biomolecular systems
+
+# Monitoring and logging
+logging:
+  log_file: "logs/10k_hybrid_generation.log"
+  log_level: "INFO"
+  progress_interval: 100  # Log every 100 structures
+  validation_interval: 1000  # Validate subset every 1000 structures
+
+# Resource limits
+resources:
+  max_gpu_memory_gb: 11  # Leave 1GB buffer on 12GB GPU
+  max_runtime_hours: 12  # Conservative estimate
+  checkpoint_on_error: true
+  resume_from_checkpoint: true
+
+# Output format
+output_format:
+  primary: "hdf5"
+  metadata: "json"
+  include_teacher_outputs: true
+  include_generation_metadata: true
+  compression: "gzip"  # For final HDF5
+  compression_level: 4
+
+# Expected timeline
+# MolDiff generation: 8000 * 1.6s = 12,800s = 3.6 hours
+# RNA loading: 1000 * 0.5s = 500s = 8 minutes
+# Teacher labeling: 9000 * 1.0s = 9,000s = 2.5 hours
+# Benchmark: 1000 structures = 1 hour
+# Total: ~8 hours (overnight completion)

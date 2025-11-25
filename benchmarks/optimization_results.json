@@ -1,0 +1,251 @@
+{
+  "Baseline (FP32)": {
+    "config": "Baseline (FP32)",
+    "system_results": {
+      "10": {
+        "mean_time_ms": 0.8294396102428436,
+        "std_time_ms": 1.2569802642214194,
+        "median_time_ms": 0.4287306219339371,
+        "min_time_ms": 0.37221983075141907,
+        "throughput": 1205.6332825812594,
+        "sample_energy": -38.668052673339844,
+        "sample_forces_shape": [
+          10,
+          3
+        ]
+      },
+      "20": {
+        "mean_time_ms": 0.9004507958889008,
+        "std_time_ms": 1.2621160281384884,
+        "median_time_ms": 0.4382990300655365,
+        "min_time_ms": 0.3948509693145752,
+        "throughput": 1110.5548515983342,
+        "sample_energy": -86.966552734375,
+        "sample_forces_shape": [
+          20,
+          3
+        ]
+      },
+      "50": {
+        "mean_time_ms": 0.8825206756591797,
+        "std_time_ms": 1.2114734588501799,
+        "median_time_ms": 0.4357174038887024,
+        "min_time_ms": 0.42485445737838745,
+        "throughput": 1133.1179286571066,
+        "sample_energy": -181.79620361328125,
+        "sample_forces_shape": [
+          50,
+          3
+        ]
+      },
+      "100": {
+        "mean_time_ms": 0.8363746851682663,
+        "std_time_ms": 1.3092027274093907,
+        "median_time_ms": 0.4390440881252289,
+        "min_time_ms": 0.42638182640075684,
+        "throughput": 1195.6363789260488,
+        "sample_energy": -394.8155822753906,
+        "sample_forces_shape": [
+          100,
+          3
+        ]
+      }
+    },
+    "total_time": 172.43928834795952,
+    "total_calls": 200,
+    "avg_time_per_call": 0.8621964417397976,
+    "gpu_memory_mb": 128.650390625
+  },
+  "FP16": {
+    "config": "FP16",
+    "system_results": {
+      "10": {
+        "mean_time_ms": 0.784158930182457,
+        "std_time_ms": 1.1169368299561349,
+        "median_time_ms": 0.4276446998119354,
+        "min_time_ms": 0.3737136721611023,
+        "throughput": 1275.2516887964555,
+        "sample_energy": -38.6630859375,
+        "sample_forces_shape": [
+          10,
+          3
+        ]
+      },
+      "20": {
+        "mean_time_ms": 0.851452499628067,
+        "std_time_ms": 1.162184323986258,
+        "median_time_ms": 0.43044425547122955,
+        "min_time_ms": 0.3757663071155548,
+        "throughput": 1174.463637650746,
+        "sample_energy": -86.970703125,
+        "sample_forces_shape": [
+          20,
+          3
+        ]
+      },
+      "50": {
+        "mean_time_ms": 0.437391996383667,
+        "std_time_ms": 0.011679391246332877,
+        "median_time_ms": 0.4344359040260315,
+        "min_time_ms": 0.4245191812515259,
+        "throughput": 2286.2786888373475,
+        "sample_energy": -181.7685546875,
+        "sample_forces_shape": [
+          50,
+          3
+        ]
+      },
+      "100": {
+        "mean_time_ms": 0.43750427663326263,
+        "std_time_ms": 0.01035275299170886,
+        "median_time_ms": 0.43586641550064087,
+        "min_time_ms": 0.4271864891052246,
+        "throughput": 2285.6919427058506,
+        "sample_energy": -394.81591796875,
+        "sample_forces_shape": [
+          100,
+          3
+        ]
+      }
+    },
+    "total_time": 125.52538514137268,
+    "total_calls": 200,
+    "avg_time_per_call": 0.6276269257068634,
+    "gpu_memory_mb": 121.744140625,
+    "speedup_vs_baseline": 1.373740364578449,
+    "accuracy": {
+      "mean_energy_error_eV": 0.009275436401367188,
+      "max_energy_error_eV": 0.02764892578125,
+      "mean_force_rmse": 0.0015256787883117795,
+      "max_force_rmse": 0.0026558551471680403
+    }
+  },
+  "TorchScript": {
+    "config": "TorchScript",
+    "system_results": {
+      "10": {
+        "mean_time_ms": 0.4108213633298874,
+        "std_time_ms": 0.021637515595687575,
+        "median_time_ms": 0.41998550295829773,
+        "min_time_ms": 0.3731139004230499,
+        "throughput": 2434.1480002270605,
+        "sample_energy": -38.668052673339844,
+        "sample_forces_shape": [
+          10,
+          3
+        ]
+      },
+      "20": {
+        "mean_time_ms": 0.42671605944633484,
+        "std_time_ms": 0.015463284144041526,
+        "median_time_ms": 0.4260074347257614,
+        "min_time_ms": 0.3821961581707001,
+        "throughput": 2343.4787087636273,
+        "sample_energy": -86.966552734375,
+        "sample_forces_shape": [
+          20,
+          3
+        ]
+      },
+      "50": {
+        "mean_time_ms": 0.43277211487293243,
+        "std_time_ms": 0.010178542446578707,
+        "median_time_ms": 0.4314146935939789,
+        "min_time_ms": 0.42355433106422424,
+        "throughput": 2310.684920847114,
+        "sample_energy": -181.79620361328125,
+        "sample_forces_shape": [
+          50,
+          3
+        ]
+      },
+      "100": {
+        "mean_time_ms": 0.4509957879781723,
+        "std_time_ms": 0.11649355048774825,
+        "median_time_ms": 0.5061011761426926,
+        "min_time_ms": 0.29515475034713745,
+        "throughput": 2217.315608385236,
+        "sample_energy": -394.81561279296875,
+        "sample_forces_shape": [
+          100,
+          3
+        ]
+      }
+    },
+    "total_time": 86.06526628136635,
+    "total_calls": 200,
+    "avg_time_per_call": 0.43032633140683174,
+    "gpu_memory_mb": 130.22412109375,
+    "speedup_vs_baseline": 2.003587460988239,
+    "accuracy": {
+      "mean_energy_error_eV": 0.0,
+      "max_energy_error_eV": 0.0,
+      "mean_force_rmse": 1.0226159474768792e-06,
+      "max_force_rmse": 2.149185093003325e-06
+    }
+  },
+  "TorchScript + FP16": {
+    "config": "TorchScript + FP16",
+    "system_results": {
+      "10": {
+        "mean_time_ms": 0.3906300663948059,
+        "std_time_ms": 0.1141274855222141,
+        "median_time_ms": 0.3201048821210861,
+        "min_time_ms": 0.2572759985923767,
+        "throughput": 2559.966797305638,
+        "sample_energy": -38.663238525390625,
+        "sample_forces_shape": [
+          10,
+          3
+        ]
+      },
+      "20": {
+        "mean_time_ms": 0.8566955476999283,
+        "std_time_ms": 1.1578256129606996,
+        "median_time_ms": 0.43320655822753906,
+        "min_time_ms": 0.3841668367385864,
+        "throughput": 1167.2758224141799,
+        "sample_energy": -86.96514892578125,
+        "sample_forces_shape": [
+          20,
+          3
+        ]
+      },
+      "50": {
+        "mean_time_ms": 0.43707065284252167,
+        "std_time_ms": 0.015868577570802934,
+        "median_time_ms": 0.43370388448238373,
+        "min_time_ms": 0.4234425723552704,
+        "throughput": 2287.9596090390082,
+        "sample_energy": -181.7786102294922,
+        "sample_forces_shape": [
+          50,
+          3
+        ]
+      },
+      "100": {
+        "mean_time_ms": 0.43654315173625946,
+        "std_time_ms": 0.010164006452209115,
+        "median_time_ms": 0.43341144919395447,
+        "min_time_ms": 0.42682141065597534,
+        "throughput": 2290.724286986769,
+        "sample_energy": -394.78814697265625,
+        "sample_forces_shape": [
+          100,
+          3
+        ]
+      }
+    },
+    "total_time": 106.04697093367577,
+    "total_calls": 200,
+    "avg_time_per_call": 0.5302348546683788,
+    "gpu_memory_mb": 131.77783203125,
+    "speedup_vs_baseline": 1.6260651938451598,
+    "accuracy": {
+      "mean_energy_error_eV": 0.011224746704101562,
+      "max_energy_error_eV": 0.023040771484375,
+      "mean_force_rmse": 0.001967314863577485,
+      "max_force_rmse": 0.003320555668324232
+    }
+  }
+}

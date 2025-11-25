@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "pytorch_version": "2.5.1+cu121",
+    "python_version": "3.13.9",
+    "cuda_device": "NVIDIA GeForce RTX 3080 Ti",
+    "torch_compile_supported": true,
+    "n_warmup": 3,
+    "n_trials": 20,
+    "timestamp": "2025-11-24 19:22:20"
+  },
+  "all_results": {
+    "baseline": {
+      "config_name": "Baseline (No optimizations)",
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": false,
+        "use_cuda_graphs": false,
+        "use_jit": false
+      },
+      "per_molecule": {
+        "H2": {
+          "n_atoms": 2,
+          "mean_ms": 0.29981713742017746,
+          "std_ms": 0.033533184584312224,
+          "median_ms": 0.29892101883888245,
+          "min_ms": 0.24386495351791382,
+          "max_ms": 0.37556514143943787,
+          "p95_ms": 0.34139230847358704
+        },
+        "H2O": {
+          "n_atoms": 3,
+          "mean_ms": 0.27206651866436005,
+          "std_ms": 0.027027907520881314,
+          "median_ms": 0.27897022664546967,
+          "min_ms": 0.24017319083213806,
+          "max_ms": 0.34254416823387146,
+          "p95_ms": 0.3072813153266907
+        },
+        "CH4": {
+          "n_atoms": 5,
+          "mean_ms": 0.30054133385419846,
+          "std_ms": 0.020661465566600378,
+          "median_ms": 0.2931971102952957,
+          "min_ms": 0.28315186500549316,
+          "max_ms": 0.3626495599746704,
+          "p95_ms": 0.34698229283094406
+        },
+        "Benzene": {
+          "n_atoms": 12,
+          "mean_ms": 0.3046667203307152,
+          "std_ms": 0.026242233194015984,
+          "median_ms": 0.2931766211986542,
+          "min_ms": 0.2830289304256439,
+          "max_ms": 0.36800652742385864,
+          "p95_ms": 0.36736950278282166
+        }
+      },
+      "aggregate": {
+        "mean_across_molecules_ms": 0.2942729275673628,
+        "std_across_molecules_ms": 0.012953635634868732
+      }
+    },
+    "fp16_only": {
+      "config_name": "FP16 autocast (no compile)",
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": true,
+        "use_cuda_graphs": false,
+        "use_jit": false
+      },
+      "per_molecule": {
+        "H2": {
+          "n_atoms": 2,
+          "mean_ms": 0.3663821145892143,
+          "std_ms": 0.05538510970399634,
+          "median_ms": 0.34420937299728394,
+          "min_ms": 0.3298148512840271,
+          "max_ms": 0.5353763699531555,
+          "p95_ms": 0.4831934347748757
+        },
+        "H2O": {
+          "n_atoms": 3,
+          "mean_ms": 0.2948395907878876,
+          "std_ms": 0.021844699455453614,
+          "median_ms": 0.2903565764427185,
+          "min_ms": 0.27054548263549805,
+          "max_ms": 0.3582462668418884,
+          "p95_ms": 0.3279557451605797
+        },
+        "CH4": {
+          "n_atoms": 5,
+          "mean_ms": 0.3111284226179123,
+          "std_ms": 0.029283067731306782,
+          "median_ms": 0.3012530505657196,
+          "min_ms": 0.29014796018600464,
+          "max_ms": 0.41825324296951294,
+          "p95_ms": 0.3605352714657784
+        },
+        "Benzene": {
+          "n_atoms": 12,
+          "mean_ms": 0.2989223226904869,
+          "std_ms": 0.018979066307635253,
+          "median_ms": 0.29388628900051117,
+          "min_ms": 0.2726726233959198,
+          "max_ms": 0.3661513328552246,
+          "p95_ms": 0.3234317526221276
+        }
+      },
+      "aggregate": {
+        "mean_across_molecules_ms": 0.3178181126713753,
+        "std_across_molecules_ms": 0.028671752572170403
+      }
+    },
+    "jit": {
+      "config_name": "TorchScript JIT",
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": false,
+        "use_cuda_graphs": false,
+        "use_jit": true
+      },
+      "per_molecule": {
+        "H2": {
+          "n_atoms": 2,
+          "mean_ms": 0.33939704298973083,
+          "std_ms": 0.08513113161452028,
+          "median_ms": 0.30614249408245087,
+          "min_ms": 0.2802237868309021,
+          "max_ms": 0.562962144613266,
+          "p95_ms": 0.56050606071949
+        },
+        "H2O": {
+          "n_atoms": 3,
+          "mean_ms": 0.9010856971144676,
+          "std_ms": 0.11547169302108656,
+          "median_ms": 0.8711498230695724,
+          "min_ms": 0.7339306175708771,
+          "max_ms": 1.1614151298999786,
+          "p95_ms": 1.1123854666948318
+        },
+        "CH4": {
+          "n_atoms": 5,
+          "mean_ms": 0.46718139201402664,
+          "std_ms": 0.041834606777571635,
+          "median_ms": 0.4689842462539673,
+          "min_ms": 0.38174912333488464,
+          "max_ms": 0.5577690899372101,
+          "p95_ms": 0.5232175812125206
+        },
+        "Benzene": {
+          "n_atoms": 12,
+          "mean_ms": 0.48955902457237244,
+          "std_ms": 0.029973202736931465,
+          "median_ms": 0.48431195318698883,
+          "min_ms": 0.43169036507606506,
+          "max_ms": 0.5370266735553741,
+          "p95_ms": 0.536060519516468
+        }
+      },
+      "aggregate": {
+        "mean_across_molecules_ms": 0.5493057891726494,
+        "std_across_molecules_ms": 0.21102421534299515
+      }
+    },
+    "jit_fp16": {
+      "config_name": "TorchScript JIT + FP16",
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": true,
+        "use_cuda_graphs": false,
+        "use_jit": true
+      },
+      "per_molecule": {
+        "H2": {
+          "n_atoms": 2,
+          "mean_ms": 0.4715641960501671,
+          "std_ms": 0.03868321844465799,
+          "median_ms": 0.46876072883605957,
+          "min_ms": 0.41342154145240784,
+          "max_ms": 0.542081892490387,
+          "p95_ms": 0.5236010998487473
+        },
+        "H2O": {
+          "n_atoms": 3,
+          "mean_ms": 0.812523253262043,
+          "std_ms": 0.041971694406610645,
+          "median_ms": 0.8345060050487518,
+          "min_ms": 0.7398650050163269,
+          "max_ms": 0.8715316653251648,
+          "p95_ms": 0.8521944284439087
+        },
+        "CH4": {
+          "n_atoms": 5,
+          "mean_ms": 0.4599370062351227,
+          "std_ms": 0.04275095772479704,
+          "median_ms": 0.46037137508392334,
+          "min_ms": 0.39562955498695374,
+          "max_ms": 0.547066330909729,
+          "p95_ms": 0.5294879898428917
+        },
+        "Benzene": {
+          "n_atoms": 12,
+          "mean_ms": 0.47984402626752853,
+          "std_ms": 0.02812780148202474,
+          "median_ms": 0.47896988689899445,
+          "min_ms": 0.43131038546562195,
+          "max_ms": 0.5481243133544922,
+          "p95_ms": 0.5238112062215805
+        }
+      },
+      "aggregate": {
+        "mean_across_molecules_ms": 0.5559671204537153,
+        "std_across_molecules_ms": 0.14829144550070172
+      }
+    }
+  },
+  "comparisons": {
+    "fp16_only": {
+      "mean_time_ms": 0.3178181126713753,
+      "baseline_time_ms": 0.2942729275673628,
+      "speedup": 0.9259161634744264,
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": true,
+        "use_cuda_graphs": false,
+        "use_jit": false
+      }
+    },
+    "jit": {
+      "mean_time_ms": 0.5493057891726494,
+      "baseline_time_ms": 0.2942729275673628,
+      "speedup": 0.5357178703879842,
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": false,
+        "use_cuda_graphs": false,
+        "use_jit": true
+      }
+    },
+    "jit_fp16": {
+      "mean_time_ms": 0.5559671204537153,
+      "baseline_time_ms": 0.2942729275673628,
+      "speedup": 0.5292991559054997,
+      "config": {
+        "use_compile": false,
+        "compile_mode": null,
+        "compile_options": null,
+        "use_fp16": true,
+        "use_cuda_graphs": false,
+        "use_jit": true
+      }
+    }
+  },
+  "best_config": "fp16_only"
+}

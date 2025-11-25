@@ -1,0 +1,138 @@
+{
+  "config": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "timestamp": "2025-11-24 08:22:28",
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_available": true,
+    "use_compile": false,
+    "use_fp16": false,
+    "optimizations": [
+      "none"
+    ],
+    "cuda_device": "NVIDIA GeForce RTX 3080 Ti"
+  },
+  "single_inference": {
+    "mean_time_ms": 38.220034539699554,
+    "std_time_ms": 0.921568328687973,
+    "min_time_ms": 37.06718236207962,
+    "max_time_ms": 40.581073611974716,
+    "median_time_ms": 38.00458088517189,
+    "p95_time_ms": 39.75445702672005,
+    "n_samples": 10,
+    "by_size": {
+      "3": {
+        "mean_ms": 37.06718236207962,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "4": {
+        "mean_ms": 37.474699318408966,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "5": {
+        "mean_ms": 38.23739290237427,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "8": {
+        "mean_ms": 40.581073611974716,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "11": {
+        "mean_ms": 38.245175033807755,
+        "std_ms": 0.4989728331565857,
+        "n_samples": 2
+      },
+      "12": {
+        "mean_ms": 38.087411783635616,
+        "std_ms": 0.3405566209365246,
+        "n_samples": 4
+      }
+    }
+  },
+  "batch_inference": {
+    "1": {
+      "mean_time_ms": 0.7937788963317871,
+      "std_time_ms": 0.016784163141989963,
+      "time_per_structure_ms": 0.7937788963317871,
+      "throughput_struct_per_sec": 1259.7966570051212,
+      "speedup_vs_batch1": 1.0
+    },
+    "2": {
+      "mean_time_ms": 38.5299950838089,
+      "std_time_ms": 2.1650643888694856,
+      "time_per_structure_ms": 19.26499754190445,
+      "throughput_struct_per_sec": 51.907611087146,
+      "speedup_vs_batch1": 0.041203166239974394
+    },
+    "4": {
+      "mean_time_ms": 42.54652187228203,
+      "std_time_ms": 0.26259234337018456,
+      "time_per_structure_ms": 10.636630468070507,
+      "throughput_struct_per_sec": 94.01473549371136,
+      "speedup_vs_batch1": 0.07462691297912309
+    }
+  },
+  "memory_usage": {
+    "baseline_mb": 65.63427734375,
+    "peak_mb": 69.52099609375,
+    "current_mb": 65.63427734375,
+    "inference_overhead_mb": 3.88671875
+  },
+  "scaling_analysis": {
+    "scaling_data": [
+      {
+        "n_atoms": 3,
+        "category": "small",
+        "mean_time_ms": 8.217863738536835,
+        "std_time_ms": 14.81903430124345,
+        "ms_per_atom": 2.7392879128456116
+      },
+      {
+        "n_atoms": 4,
+        "category": "small",
+        "mean_time_ms": 8.150237053632736,
+        "std_time_ms": 14.682401387764655,
+        "ms_per_atom": 2.037559263408184
+      },
+      {
+        "n_atoms": 5,
+        "category": "small",
+        "mean_time_ms": 8.13213363289833,
+        "std_time_ms": 14.687567624271242,
+        "ms_per_atom": 1.6264267265796661
+      },
+      {
+        "n_atoms": 11,
+        "category": "medium",
+        "mean_time_ms": 8.759773522615433,
+        "std_time_ms": 15.92724765668307,
+        "ms_per_atom": 0.7963430475104939
+      },
+      {
+        "n_atoms": 12,
+        "category": "medium",
+        "mean_time_ms": 8.141134679317474,
+        "std_time_ms": 14.693750552587982,
+        "ms_per_atom": 0.6784278899431229
+      },
+      {
+        "n_atoms": 12,
+        "category": "medium",
+        "mean_time_ms": 8.291959017515182,
+        "std_time_ms": 14.975396330823601,
+        "ms_per_atom": 0.6909965847929319
+      },
+      {
+        "n_atoms": 60,
+        "category": "large",
+        "mean_time_ms": 10.06297692656517,
+        "std_time_ms": 18.49955142088338,
+        "ms_per_atom": 0.1677162821094195
+      }
+    ]
+  }
+}

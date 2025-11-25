@@ -1,0 +1,9 @@
+{
+  "Original Student (427K)": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "checkpoint_size_mb": 1.720802,
+    "num_parameters": 427292,
+    "torchscript_traced": "models/original_model_traced.pt",
+    "onnx": "models/original_model.onnx"
+  }
+}

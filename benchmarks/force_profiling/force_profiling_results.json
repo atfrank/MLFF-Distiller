@@ -1,0 +1,149 @@
+{
+  "energy_only": {
+    "3": {
+      "mean_ms": 3.093401901423931,
+      "std_ms": 0.23078401652565642,
+      "min_ms": 2.8516724705696106,
+      "max_ms": 3.5146139562129974,
+      "median_ms": 3.0462760478258133
+    },
+    "4": {
+      "mean_ms": 3.0532920733094215,
+      "std_ms": 0.2095337605598098,
+      "min_ms": 2.8569474816322327,
+      "max_ms": 3.4821927547454834,
+      "median_ms": 2.9634926468133926
+    },
+    "5": {
+      "mean_ms": 3.1326301395893097,
+      "std_ms": 0.1824331823133688,
+      "min_ms": 2.859193831682205,
+      "max_ms": 3.4976936876773834,
+      "median_ms": 3.179844468832016
+    },
+    "8": {
+      "mean_ms": 3.06002851575613,
+      "std_ms": 0.22826995351525153,
+      "min_ms": 2.8398558497428894,
+      "max_ms": 3.5272762179374695,
+      "median_ms": 2.955496311187744
+    },
+    "12": {
+      "mean_ms": 3.0403761193156242,
+      "std_ms": 0.21803573670104132,
+      "min_ms": 2.8430186212062836,
+      "max_ms": 3.531206399202347,
+      "median_ms": 2.922952175140381
+    }
+  },
+  "energy_and_forces": {
+    "3": {
+      "mean_ms": 7.0578185841441154,
+      "std_ms": 0.10235827332524317,
+      "min_ms": 6.887536495923996,
+      "max_ms": 7.322393357753754,
+      "median_ms": 7.072413340210915
+    },
+    "4": {
+      "mean_ms": 7.036071643233299,
+      "std_ms": 0.14514431225702598,
+      "min_ms": 6.851281970739365,
+      "max_ms": 7.433027029037476,
+      "median_ms": 7.02059268951416
+    },
+    "5": {
+      "mean_ms": 7.14111365377903,
+      "std_ms": 0.12468123882531615,
+      "min_ms": 6.949104368686676,
+      "max_ms": 7.4196308851242065,
+      "median_ms": 7.096957415342331
+    },
+    "8": {
+      "mean_ms": 7.545953243970871,
+      "std_ms": 0.639338183788664,
+      "min_ms": 6.999552249908447,
+      "max_ms": 8.988581597805023,
+      "median_ms": 7.160091772675514
+    },
+    "12": {
+      "mean_ms": 7.122698612511158,
+      "std_ms": 0.120134821968006,
+      "min_ms": 6.959669291973114,
+      "max_ms": 7.367972284555435,
+      "median_ms": 7.112355902791023
+    }
+  },
+  "component_profile": {
+    "neighbor_search": {
+      "mean_ms": 0.45052580535411835,
+      "std_ms": 0.13592125588101084
+    },
+    "edge_features": {
+      "mean_ms": 0.5525162443518639,
+      "std_ms": 0.12553552211025817
+    },
+    "forward_pass_energy": {
+      "mean_ms": 4.670222774147987,
+      "std_ms": 0.5250279793907842
+    },
+    "autograd_forces": {
+      "mean_ms": 6.0441650450229645,
+      "std_ms": 0.18511412727591894
+    },
+    "energy_and_forces_total": {
+      "mean_ms": 10.964378826320171,
+      "std_ms": 0.2275390743397884
+    }
+  },
+  "overhead_analysis": {
+    "3": {
+      "energy_only_ms": 3.093401901423931,
+      "energy_forces_ms": 7.0578185841441154,
+      "overhead_ms": 3.9644166827201843,
+      "slowdown_factor": 2.281571812862504,
+      "overhead_percentage": 128.1571812862504
+    },
+    "4": {
+      "energy_only_ms": 3.0532920733094215,
+      "energy_forces_ms": 7.036071643233299,
+      "overhead_ms": 3.9827795699238777,
+      "slowdown_factor": 2.304421416064202,
+      "overhead_percentage": 130.44214160642017
+    },
+    "5": {
+      "energy_only_ms": 3.1326301395893097,
+      "energy_forces_ms": 7.14111365377903,
+      "overhead_ms": 4.00848351418972,
+      "slowdown_factor": 2.2795904194151806,
+      "overhead_percentage": 127.95904194151804
+    },
+    "8": {
+      "energy_only_ms": 3.06002851575613,
+      "energy_forces_ms": 7.545953243970871,
+      "overhead_ms": 4.485924728214741,
+      "slowdown_factor": 2.465974812037421,
+      "overhead_percentage": 146.59748120374206
+    },
+    "12": {
+      "energy_only_ms": 3.0403761193156242,
+      "energy_forces_ms": 7.122698612511158,
+      "overhead_ms": 4.082322493195534,
+      "slowdown_factor": 2.3427031173085413,
+      "overhead_percentage": 134.2703117308541
+    }
+  },
+  "recommendations": [
+    "Force computation (autograd) takes 55.1% of total time",
+    "HIGH PRIORITY: Implement analytical gradients to eliminate autograd overhead",
+    "  - Expected speedup: 1.8x (eliminate 55% overhead)",
+    "  - Implementation: Compute force gradients analytically during forward pass",
+    "OPTIMIZATION: Implement batched force computation",
+    "  - Compute forces for multiple structures simultaneously",
+    "  - Expected speedup: 5-10x throughput improvement"
+  ],
+  "config": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "n_iterations": 20
+  }
+}

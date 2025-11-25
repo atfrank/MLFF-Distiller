@@ -1,0 +1,204 @@
+{
+  "metadata": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "pytorch_version": "2.9.1+cu128",
+    "python_version": "3.12.12",
+    "cuda_device": "NVIDIA GeForce RTX 3080 Ti",
+    "n_trials": 30,
+    "batch_sizes_tested": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ]
+  },
+  "molecules": {
+    "H2O": {
+      "n_atoms": 3,
+      "formula": "H2O"
+    },
+    "NH3": {
+      "n_atoms": 4,
+      "formula": "H3N"
+    },
+    "CH4": {
+      "n_atoms": 5,
+      "formula": "CH4"
+    },
+    "Ethanol": {
+      "n_atoms": 9,
+      "formula": "C2H6O"
+    },
+    "Benzene": {
+      "n_atoms": 12,
+      "formula": "C6H6"
+    },
+    "Water_cluster_3": {
+      "n_atoms": 9,
+      "formula": "H6O3"
+    },
+    "Water_cluster_5": {
+      "n_atoms": 15,
+      "formula": "H10O5"
+    },
+    "Water_cluster_10": {
+      "n_atoms": 30,
+      "formula": "H20O10"
+    },
+    "Ethane": {
+      "n_atoms": 8,
+      "formula": "C2H6"
+    },
+    "Butane": {
+      "n_atoms": 14,
+      "formula": "C4H10"
+    },
+    "Hexane": {
+      "n_atoms": 20,
+      "formula": "C6H14"
+    },
+    "Naphthalene": {
+      "n_atoms": 18,
+      "formula": "C10H8"
+    },
+    "Anthracene": {
+      "n_atoms": 24,
+      "formula": "C14H10"
+    },
+    "Glycine": {
+      "n_atoms": 10,
+      "formula": "C2H5NO2"
+    },
+    "Alanine": {
+      "n_atoms": 13,
+      "formula": "C3H7NO2"
+    },
+    "Adenine": {
+      "n_atoms": 15,
+      "formula": "C5H5N5"
+    },
+    "Guanine": {
+      "n_atoms": 16,
+      "formula": "C5H5N5O"
+    }
+  },
+  "baseline": {
+    "per_molecule": {
+      "Benzene": {
+        "mean_ms": 16.025545944770176,
+        "std_ms": 2.2949320845140027,
+        "median_ms": 15.030277892947197,
+        "min_ms": 13.629976660013199,
+        "max_ms": 22.555038332939148,
+        "p95_ms": 20.27150522917509,
+        "p99_ms": 21.910055056214336
+      },
+      "Ethane": {
+        "mean_ms": 16.01522242029508,
+        "std_ms": 3.843150119221906,
+        "median_ms": 14.776533469557762,
+        "min_ms": 13.045798987150192,
+        "max_ms": 30.76992928981781,
+        "p95_ms": 23.847854509949656,
+        "p99_ms": 29.98731251806021
+      },
+      "Hexane": {
+        "mean_ms": 15.909747531016668,
+        "std_ms": 1.779876670510343,
+        "median_ms": 15.215849503874779,
+        "min_ms": 13.614937663078308,
+        "max_ms": 19.62418109178543,
+        "p95_ms": 19.477619044482708,
+        "p99_ms": 19.585703909397125
+      },
+      "Naphthalene": {
+        "mean_ms": 13.808955873052279,
+        "std_ms": 2.105234340881242,
+        "median_ms": 13.380784541368484,
+        "min_ms": 11.568740010261536,
+        "max_ms": 18.903523683547974,
+        "p95_ms": 18.019129708409306,
+        "p99_ms": 18.76202691346407
+      },
+      "Glycine": {
+        "mean_ms": 16.078768173853557,
+        "std_ms": 2.0892503662565085,
+        "median_ms": 15.264393761754036,
+        "min_ms": 13.726390898227692,
+        "max_ms": 22.599268704652786,
+        "p95_ms": 19.800741225481033,
+        "p99_ms": 21.813063062727455
+      },
+      "Water_cluster_5": {
+        "mean_ms": 16.11238916714986,
+        "std_ms": 2.1390235928521717,
+        "median_ms": 14.907712116837502,
+        "min_ms": 14.130376279354095,
+        "max_ms": 23.041095584630966,
+        "p95_ms": 19.519467465579506,
+        "p99_ms": 22.126530036330227
+      }
+    },
+    "mean_ms": 15.658438185022936
+  },
+  "batched": {
+    "batch_1": {
+      "mean_ms_per_mol": 15.725487967332205,
+      "std_ms_per_mol": 2.4396605109385168,
+      "median_ms_per_mol": 14.705907553434372,
+      "min_ms_per_mol": 13.719476759433746,
+      "total_mean_ms": 15.725487967332205,
+      "total_std_ms": 2.4396605109385168,
+      "batch_size": 1,
+      "speedup_vs_baseline": 0.9957362351840174
+    },
+    "batch_2": {
+      "mean_ms_per_mol": 8.77335723489523,
+      "std_ms_per_mol": 0.9350654236267584,
+      "median_ms_per_mol": 8.448323234915733,
+      "min_ms_per_mol": 7.765742018818855,
+      "total_mean_ms": 17.54671446979046,
+      "total_std_ms": 1.8701308472535167,
+      "batch_size": 2,
+      "speedup_vs_baseline": 1.7847715265420772
+    },
+    "batch_4": {
+      "mean_ms_per_mol": 4.629204546411832,
+      "std_ms_per_mol": 0.4630329937482421,
+      "median_ms_per_mol": 4.477075766772032,
+      "min_ms_per_mol": 4.207495599985123,
+      "total_mean_ms": 18.516818185647328,
+      "total_std_ms": 1.8521319749929683,
+      "batch_size": 4,
+      "speedup_vs_baseline": 3.382533225316223
+    },
+    "batch_8": {
+      "mean_ms_per_mol": 2.821745832140247,
+      "std_ms_per_mol": 0.25947569933255005,
+      "median_ms_per_mol": 2.720794640481472,
+      "min_ms_per_mol": 2.5087995454669,
+      "total_mean_ms": 22.573966657121975,
+      "total_std_ms": 2.0758055946604004,
+      "batch_size": 8,
+      "speedup_vs_baseline": 5.5492022019383205
+    },
+    "batch_16": {
+      "mean_ms_per_mol": 1.7759528166304033,
+      "std_ms_per_mol": 0.1197420980219345,
+      "median_ms_per_mol": 1.7474244814366102,
+      "min_ms_per_mol": 1.6400127205997705,
+      "total_mean_ms": 28.415245066086452,
+      "total_std_ms": 1.915873568350952,
+      "batch_size": 16,
+      "speedup_vs_baseline": 8.816922408294838
+    }
+  },
+  "best_configuration": {
+    "batch_size": 16,
+    "speedup": 8.816922408294838,
+    "time_per_mol_ms": 1.7759528166304033,
+    "target_achieved": true
+  }
+}

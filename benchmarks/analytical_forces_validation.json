@@ -1,0 +1,11 @@
+{
+  "config": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_available": true
+  },
+  "accuracy": {
+    "H2O": {
+      "energy_error": 0.0,
+      "force_mae": 

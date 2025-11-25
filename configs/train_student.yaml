@@ -1,0 +1,127 @@
+# Training Configuration for Student Force Field Model
+#
+# This configuration is optimized for knowledge distillation from teacher
+# models (Orb-v2) to fast, compact student models suitable for production MD.
+#
+# Quick Start:
+#   python scripts/train_student.py --config configs/train_student.yaml
+#
+# Author: ML Distillation Project
+# Date: 2025-11-24
+
+# Basic Training Settings
+max_epochs: 100
+batch_size: 16  # Reduced for mixed molecule/biomolecule sizes
+val_batch_size: 16  # Match training batch size
+num_workers: 4
+pin_memory: true
+
+# Gradient Control
+grad_clip: 1.0  # Prevent gradient explosion on large RNA structures
+accumulation_steps: 1  # Increase to simulate larger batch
+mixed_precision: false  # Set true for faster training on modern GPUs
+precision: "fp32"  # "fp16" or "bf16" for mixed precision
+
+# Early Stopping
+early_stopping: true
+early_stopping_patience: 20  # Stop if no improvement for 20 epochs
+early_stopping_min_delta: 1.0e-6
+
+# Device and Reproducibility
+device: "auto"  # "cuda", "cpu", or "auto"
+seed: 42
+deterministic: false  # Set true for exact reproducibility (slower)
+
+# Optimizer Configuration
+optimizer:
+  name: "adamw"  # "adam", "adamw", "sgd", "rmsprop"
+  learning_rate: 1.0e-3  # Start conservative, tune up if stable
+  weight_decay: 1.0e-5  # Light regularization
+  betas: [0.9, 0.999]  # Adam beta parameters
+  momentum: 0.9  # For SGD
+  eps: 1.0e-8  # Numerical stability
+
+# Learning Rate Scheduler
+scheduler:
+  name: "warmup_cosine"  # "cosine", "step", "plateau", "exponential", "warmup_cosine", "none"
+  warmup_steps: 1000  # Gradual warmup for stability
+  warmup_start_lr: 1.0e-7  # Very small initial LR
+  cosine_t_max: null  # Defaults to max_epochs
+  cosine_eta_min: 1.0e-7  # Minimum LR at end of cosine schedule
+  step_size: 30  # For StepLR
+  gamma: 0.1  # LR decay factor
+  plateau_mode: "min"  # Minimize validation loss
+  plateau_factor: 0.5  # Reduce LR by 50% on plateau
+  plateau_patience: 10  # Wait 10 epochs before reducing LR
+
+# Loss Function Weights
+loss:
+  # CRITICAL: Force accuracy is paramount for MD stability
+  # Typical ratio: force_weight >> energy_weight
+  energy_weight: 1.0
+  force_weight: 100.0  # Forces are 100x more important than energy
+  stress_weight: 0.1  # Stress less critical for current focus
+  angular_weight: 10.0  # Angular loss for directional accuracy (cosine similarity)
+
+  # Loss function types
+  force_loss_type: "mse"  # "mse", "mae", "huber"
+  energy_loss_type: "mse"  # "mse", "mae", "huber"
+  stress_loss_type: "mse"  # "mse", "mae", "huber"
+  huber_delta: 1.0  # Delta for Huber loss
+
+# Checkpointing
+checkpoint:
+  checkpoint_dir: "checkpoints"
+  save_interval: 5  # Save every 5 epochs
+  keep_last_n: 3  # Keep only last 3 checkpoints (plus best)
+  save_best: true  # Always save best model
+  save_optimizer: true  # Save optimizer state for resumption
+
+# Logging Configuration
+logging:
+  log_interval: 10  # Log metrics every 10 steps
+  val_interval: 1  # Validate every epoch
+  use_tensorboard: true
+  use_wandb: false  # Set true if using W&B
+  tensorboard_dir: "runs"
+  wandb_project: "mlff-distillation"
+  wandb_entity: null
+  wandb_run_name: null
+  log_gradients: false  # Log gradient statistics (verbose)
+  log_weights: false  # Log weight statistics (verbose)
+
+# Validation and Monitoring
+validate_at_start: true  # Run validation before training
+track_force_rmse: true  # Track force RMSE (critical for MD)
+track_energy_mae: true  # Track energy MAE
+track_stress_rmse: false  # Track stress RMSE if needed
+
+# Comments and Recommendations:
+#
+# For Initial Training (4,883 structures):
+# - batch_size: 16 (handles large RNA molecules)
+# - learning_rate: 1e-3 (conservative start)
+# - max_epochs: 100 (should converge in 50-100 epochs)
+# - force_weight: 100.0 (prioritize forces for MD)
+#
+# If Training is Too Slow:
+# - Increase batch_size to 32 (if GPU memory allows)
+# - Enable mixed_precision: true (2x speedup on modern GPUs)
+# - Reduce num_workers if CPU is bottleneck
+#
+# If Model Not Converging:
+# - Reduce learning_rate to 5e-4 or 1e-4
+# - Increase warmup_steps to 2000
+# - Try force_loss_type: "huber" for robustness to outliers
+#
+# For Production Training (120K structures):
+# - Increase batch_size to 64-128
+# - Extend max_epochs to 200
+# - Consider multi-GPU training (not yet implemented)
+#
+# Hyperparameter Tuning Priority:
+# 1. learning_rate (most important)
+# 2. force_weight / energy_weight ratio
+# 3. batch_size (memory vs convergence)
+# 4. grad_clip (stability)
+# 5. scheduler parameters (fine-tuning)

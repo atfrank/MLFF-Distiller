@@ -1,0 +1,75 @@
+{
+  "validation": {
+    "Original Student (427K)": {
+      "energy_mae": 11802.374399038461,
+      "n_batches": 13,
+      "status": "completed"
+    },
+    "Tiny (77K)": {
+      "energy_mae": 11722.648362379809,
+      "n_batches": 13,
+      "status": "completed"
+    },
+    "Ultra-tiny (21K)": {
+      "energy_mae": 12213.759540264424,
+      "n_batches": 13,
+      "status": "completed"
+    }
+  },
+  "export": {
+    "Original Student (427K)": {
+      "torchscript": "benchmarks/original_model_traced.pt",
+      "onnx": "benchmarks/original_model.onnx"
+    },
+    "Tiny (77K)": {
+      "torchscript": "benchmarks/tiny_model_traced.pt",
+      "onnx": "benchmarks/tiny_model.onnx"
+    },
+    "Ultra-tiny (21K)": {
+      "torchscript": "benchmarks/ultra_tiny_model_traced.pt",
+      "onnx": "benchmarks/ultra_tiny_model.onnx"
+    }
+  },
+  "summary": {
+    "Original Student (427K)": {
+      "parameters": 427292,
+      "size_mb": 1.6299896240234375,
+      "validation": {
+        "energy_mae": 11802.374399038461,
+        "n_batches": 13,
+        "status": "completed"
+      },
+      "export": {
+        "torchscript": "benchmarks/original_model_traced.pt",
+        "onnx": "benchmarks/original_model.onnx"
+      }
+    },
+    "Tiny (77K)": {
+      "parameters": 77203,
+      "size_mb": 0.2945060729980469,
+      "validation": {
+        "energy_mae": 11722.648362379809,
+        "n_batches": 13,
+        "status": "completed"
+      },
+      "export": {
+        "torchscript": "benchmarks/tiny_model_traced.pt",
+        "onnx": "benchmarks/tiny_model.onnx"
+      }
+    },
+    "Ultra-tiny (21K)": {
+      "parameters": 21459,
+      "size_mb": 0.08185958862304688,
+      "validation": {
+        "energy_mae": 12213.759540264424,
+        "n_batches": 13,
+        "status": "completed"
+      },
+      "export": {
+        "torchscript": "benchmarks/ultra_tiny_model_traced.pt",
+        "onnx": "benchmarks/ultra_tiny_model.onnx"
+      }
+    }
+  },
+  "timestamp": "/home/aaron/ATX/software/MLFF_Distiller"
+}

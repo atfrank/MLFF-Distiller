@@ -1,0 +1,350 @@
+================================================================================
+M6 PHASE: MD INTEGRATION TESTING & VALIDATION
+Quick Reference Card
+================================================================================
+
+PHASE STATUS: INITIATED AND READY FOR EXECUTION
+Date: November 25, 2025
+Phase Lead: Lead Coordinator
+Phase Owner: Agent 5 (Testing & Benchmarking Engineer)
+Duration: 12-14 days estimated
+
+================================================================================
+CRITICAL PATH DEPENDENCIES
+================================================================================
+
+START HERE:
+├─ Issue #37: Test Framework (Days 1-3) ← BLOCKS EVERYTHING
+│  └─ Issue #33: Original Model Testing (Days 2-6) ← PRODUCTION BLOCKER
+│     ├─ Issue #34: Tiny Model (Days 6-8) ← PARALLEL
+│     ├─ Issue #35: Ultra-tiny Model (Days 6-7) ← PARALLEL  
+│     └─ Issue #36: Benchmarking (Days 3-7) ← PARALLEL
+
+Issue #38: Master Coordination (Meta tracking) ← CONTINUOUS
+
+================================================================================
+GITHUB ISSUES CREATED
+================================================================================
+
+#33 ORIGINAL MODEL MD TESTING - CRITICAL PRIORITY
+   Owner: Agent 5 | Status: In Progress | Priority: CRITICAL
+   Acceptance: 10ps MD without crashes, <1% energy drift, forces <0.2 RMSE
+   Duration: 5 days | Depends on: #37
+
+#34 TINY MODEL VALIDATION  
+   Owner: Agent 5 | Status: Pending | Priority: HIGH
+   Acceptance: Characterize accuracy/speed, document limitations
+   Duration: 3 days | Depends on: #33
+
+#35 ULTRA-TINY MODEL VALIDATION
+   Owner: Agent 5 | Status: Pending | Priority: MEDIUM
+   Acceptance: Prove unsuitability for force-dependent MD
+   Duration: 2 days | Depends on: #33
+
+#36 PERFORMANCE BENCHMARKING
+   Owner: Agent 5 | Status: Pending | Priority: HIGH
+   Acceptance: Inference time, memory, speedup quantified
+   Duration: 3 days | Depends on: None (PARALLEL)
+
+#37 TEST FRAMEWORK ENHANCEMENT - CRITICAL PRIORITY
+   Owner: Agent 5 | Status: Pending | Priority: CRITICAL
+   Acceptance: NVE harness, energy/force metrics, unit tested
+   Duration: 3 days | Depends on: None (START FIRST)
+
+#38 MASTER COORDINATION
+   Owner: Coordinator | Status: Active | Priority: CRITICAL
+   Acceptance: Track all issues, blocker resolution, final report
+   Duration: Meta | Depends on: All
+
+================================================================================
+MODEL PERFORMANCE SUMMARY (From Force Analysis)
+================================================================================
+
+ORIGINAL (427K parameters, 1.0x):
+  Force R²: 0.9958 ✅ EXCELLENT
+  RMSE: 0.1606 eV/Å
+  Angular Error: 9.61°
+  Status: PRODUCTION READY - expect stable MD
+  MD Test Status: NOT YET TESTED
+
+TINY (77K parameters, 5.5x compression):
+  Force R²: 0.3787 ⚠️ DEGRADATION
+  RMSE: 1.9472 eV/Å (12x worse)
+  Angular Error: 48.63°
+  Status: REFERENCE IMPLEMENTATION
+  MD Test Status: CHARACTERIZE DEGRADATION
+
+ULTRA-TINY (21K parameters, 19.9x compression):
+  Force R²: 0.1499 ❌ SEVERE UNDERFITTING
+  RMSE: 2.2777 eV/Å (14x worse)
+  Angular Error: 82.34°
+  Status: UNSUITABLE FOR FORCES
+  MD Test Status: CONFIRM UNSUITABILITY
+
+================================================================================
+DOCUMENTATION PROVIDED
+================================================================================
+
+1. M6_MD_INTEGRATION_COORDINATION.md (16 KB)
+   → Full coordination plan, 14 sections, timelines, KPIs
+   → Read this for comprehensive phase understanding
+
+2. M6_TESTING_ENGINEER_QUICKSTART.md (18 KB)
+   → Step-by-step guide for Agent 5
+   → What's ready, what to build, execution checklist
+   → Read this FIRST if you're Agent 5
+
+3. M6_COORDINATION_SUMMARY.md (12 KB)
+   → Executive brief, resource inventory, metrics
+   → Read this for quick status overview
+
+4. M6_PHASE_INITIATION_REPORT.md (10 KB)
+   → This phase's initiation report
+   → Read this for complete context
+
+5. M6_QUICK_REFERENCE.txt (THIS FILE)
+   → Quick reference card for busy schedules
+
+================================================================================
+SUCCESS CRITERIA (ALL REQUIRED)
+================================================================================
+
+ORIGINAL MODEL (Issue #33):
+  □ 10+ picoseconds NVE ensemble without crash
+  □ Total energy drift < 1% over trajectory
+  □ Force RMSE during MD < 0.2 eV/Å average
+  □ Inference time < 10ms/step (GPU)
+  □ Production deployment: APPROVED
+
+TEST FRAMEWORK (Issue #37):
+  □ Functional NVE simulation harness
+  □ Energy conservation metrics implemented
+  □ Force accuracy metrics implemented
+  □ Unit tests passing 100%
+  □ Documentation complete
+
+TINY MODEL (Issue #34):
+  □ 5ps simulations complete
+  □ Actual metrics documented
+  □ Comparison vs Original provided
+  □ Limitations clearly stated
+  □ Use case recommendations
+
+ULTRA-TINY MODEL (Issue #35):
+  □ Short simulations show issues (expected)
+  □ Limitations explicitly documented
+  □ Not recommended for force-dependent MD
+  □ Alternative approaches suggested
+
+BENCHMARKING (Issue #36):
+  □ Inference time for all models
+  □ Memory usage comparison
+  □ Speedup quantified
+  □ Results visualized
+
+================================================================================
+KEY FILES & LOCATIONS
+================================================================================
+
+Checkpoints:
+  Original:    checkpoints/best_model.pt
+  Tiny:        checkpoints/tiny_model/best_model.pt
+  Ultra-tiny:  checkpoints/ultra_tiny_model/best_model.pt
+
+Production Code:
+  Calculator:  src/mlff_distiller/inference/ase_calculator.py
+  Tests:       tests/integration/test_*.py
+  New Tests:   tests/integration/test_md_integration.py (to create)
+
+Documentation:
+  Coordination: docs/M6_MD_INTEGRATION_COORDINATION.md
+  Quick Start:  docs/M6_TESTING_ENGINEER_QUICKSTART.md
+  Summary:      M6_COORDINATION_SUMMARY.md
+  Report:       M6_PHASE_INITIATION_REPORT.md
+
+================================================================================
+RESOURCE ALLOCATION
+================================================================================
+
+AGENT 5 (Testing Engineer):
+  Total Time: ~40 hours over 12 days
+  - Framework: 12 hours
+  - Original testing: 15 hours
+  - Tiny/Ultra-tiny: 10 hours
+  - Benchmarking: 8 hours
+
+LEAD COORDINATOR:
+  Total Time: ~5-10 hours over 12 days
+  - Issue oversight: 2 hours
+  - Blocker resolution: 2 hours
+  - Status reviews: 3 hours
+  - Final approval: 1 hour
+
+INFRASTRUCTURE:
+  GPU: CUDA available for primary testing
+  CPU: Available for baseline comparison
+  Storage: ~10GB for trajectories
+  Models: All checkpoints ready
+
+================================================================================
+DAILY STANDUP CHECKLIST
+================================================================================
+
+For Agent 5 (Daily 5-min update):
+  □ What did I complete yesterday?
+  □ What am I working on today?
+  □ What blockers do I have?
+  □ Update issue #38 comment with status
+
+For Coordinator (Daily 10-min review):
+  □ Check issue #38 for daily updates
+  □ Monitor #33-37 for progress
+  □ Respond to any blockers tagged @
+  □ Update timeline if needed
+
+================================================================================
+EXECUTION CHECKLIST - START HERE
+================================================================================
+
+BEFORE YOU START (Verify):
+  □ Read M6_TESTING_ENGINEER_QUICKSTART.md
+  □ Verify checkpoints exist and load
+  □ Verify ASE calculator works
+  □ Run existing integration tests
+  □ Understand issue dependencies
+
+WEEK 1 (Days 1-5):
+  □ Day 1-3: Issue #37 Framework development
+  □ Day 2: Issue #33 test preparation
+  □ Day 3-5: Issue #33 initial validation
+  □ Day 3-5: Issue #36 benchmarking setup
+
+WEEK 2 (Days 6-9):
+  □ Day 6-8: Issue #33 extended testing
+  □ Day 6-8: Issue #34 Tiny analysis
+  □ Day 6-7: Issue #35 Ultra-tiny analysis
+  □ Day 8-9: Final documentation
+  □ Day 9: All issues closed, report published
+
+================================================================================
+BLOCKERS & ESCALATION
+================================================================================
+
+LEVEL 1 - TECHNICAL QUESTIONS:
+  → Ask in issue comment
+  → Tag @atfrank_coord only if urgent
+  → Response time: 4 hours
+
+LEVEL 2 - BLOCKERS:
+  → Create sub-issue immediately
+  → Comment with full context
+  → Tag @atfrank_coord
+  → Response time: 2 hours
+
+LEVEL 3 - DESIGN DECISIONS:
+  → Ask in issue #38
+  → Provide options with pros/cons
+  → Tag @atfrank_coord
+  → Response time: 4 hours
+
+LEVEL 4 - SCOPE CHANGES:
+  → Escalate in issue #38
+  → Provide justification
+  → Requires coordinator approval
+  → May extend timeline
+
+================================================================================
+SUCCESS DEFINITIONS
+================================================================================
+
+MINIMAL SUCCESS (Phase Continues):
+  • Original model passes 10ps without crash
+  • Energy drift < 5%
+  • Framework functional
+  • Clear recommendations for each model
+
+TARGET SUCCESS (Excellent):
+  • Original model excellent results (<1% drift)
+  • Force accuracy maintained during MD
+  • Framework documented and reusable
+  • Tiny/Ultra-tiny limitations understood
+  • Performance benchmarks complete
+  • Production deployment approved
+
+EXCEPTIONAL SUCCESS (Exemplary):
+  • 50ps trajectories validated
+  • Temperature scaling tested
+  • Multiple molecules comprehensive testing
+  • Publication-quality visualizations
+  • Framework ready for production
+
+================================================================================
+PHASE TIMELINE AT A GLANCE
+================================================================================
+
+Week 1 (Days 1-5):       Framework + Initial Testing
+Week 2 (Days 6-9):       Extended Testing + Analysis + Documentation
+Total Duration:          12-14 calendar days
+Critical Path:           #37 → #33 (everything else parallelizes)
+
+================================================================================
+CONTACT & SUPPORT
+================================================================================
+
+Lead Coordinator: @atfrank_coord
+  - Daily issue reviews
+  - 4-hour response for blockers
+  - Decision authority
+  - Phase sign-off
+
+Testing Engineer: Agent 5
+  - Full-time execution
+  - Daily standup updates
+  - Issue closure responsibility
+  - Deliverable quality assurance
+
+Questions: Ask in GitHub issues
+Urgent: Tag @atfrank_coord
+Status: Update issue #38 daily
+
+================================================================================
+FINAL REMINDERS
+================================================================================
+
+DO:
+  ✓ Start with Issue #37 (framework) - it unblocks everything
+  ✓ Test thoroughly - don't assume Original will pass
+  ✓ Document actual results, not predictions
+  ✓ Track energy conservation carefully
+  ✓ Measure inference time accurately
+  ✓ Escalate blockers immediately
+  ✓ Update issues daily
+
+DON'T:
+  ✗ Skip framework testing - it's foundational
+  ✗ Expect Tiny/Ultra-tiny to match Original
+  ✗ Modify trained models - they're frozen
+  ✗ Ignore GPU memory constraints
+  ✗ Communicate via chat only - use GitHub
+  ✗ Get stuck on one issue - move and loop back
+
+================================================================================
+GOOD LUCK!
+================================================================================
+
+This is critical work. The Original model's production deployment depends on
+the validation results from Issue #33. You have excellent infrastructure and
+comprehensive documentation to succeed.
+
+Expected Outcome:
+  • Original model approved for production
+  • Compression benefits quantified
+  • Reusable test framework operational
+  • Clear path forward for future improvements
+
+Let's build great ML force field tools!
+
+================================================================================
+Document prepared by: Lead Coordinator
+Date: November 25, 2025
+Repository: /home/aaron/ATX/software/MLFF_Distiller

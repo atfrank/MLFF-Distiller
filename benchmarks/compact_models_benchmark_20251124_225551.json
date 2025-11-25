@@ -1,0 +1,41 @@
+{
+  "Original Student (427K)": {
+    "model_path": "checkpoints/best_model.pt",
+    "model_size_mb": 1.720802,
+    "num_parameters": 427292,
+    "gpu_results": {
+      "batch_results": {
+        "1": {
+          "avg_latency_ms": 2.973461151123047,
+          "throughput_samples_per_sec": 5380.9346034189675,
+          "latency_per_sample_ms": 0.18584132194519043
+        },
+        "2": {
+          "avg_latency_ms": 2.7855396270751953,
+          "throughput_samples_per_sec": 11487.899755208244,
+          "latency_per_sample_ms": 0.08704811334609985
+        },
+        "4": {
+          "avg_latency_ms": 3.2308101654052734,
+          "throughput_samples_per_sec": 19809.27282119401,
+          "latency_per_sample_ms": 0.0504814088344574
+        },
+        "8": {
+          "avg_latency_ms": 3.528451919555664,
+          "throughput_samples_per_sec": 36276.53229184967,
+          "latency_per_sample_ms": 0.027566030621528625
+        },
+        "16": {
+          "avg_latency_ms": 10.437822341918945,
+          "throughput_samples_per_sec": 24526.188664074885,
+          "latency_per_sample_ms": 0.04077274352312088
+        },
+        "32": {
+          "avg_latency_ms": 36.58151626586914,
+          "throughput_samples_per_sec": 13996.139369370543,
+          "latency_per_sample_ms": 0.07144827395677567
+        }
+      }
+    }
+  }
+}

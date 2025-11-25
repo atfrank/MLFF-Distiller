@@ -1,0 +1,52 @@
+{
+  "config": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "n_iterations": 20
+  },
+  "baseline": {
+    "mean_ms": 16.646168753504753,
+    "std_ms": 0.9990091304052924,
+    "times_by_size": [
+      16.90177619457245,
+      17.632599361240864,
+      17.579940147697926,
+      16.155220195651054,
+      14.961307868361473
+    ]
+  },
+  "batched": {
+    "1": {
+      "total_time_ms": 11.469839699566364,
+      "time_per_mol_ms": 11.469839699566364,
+      "throughput_mol_per_sec": 87.18517661914723,
+      "std_ms": 1.7104264939950629
+    },
+    "2": {
+      "total_time_ms": 17.49960295855999,
+      "time_per_mol_ms": 8.749801479279995,
+      "throughput_mol_per_sec": 114.28830726823394,
+      "std_ms": 0.19356346370461935
+    },
+    "4": {
+      "total_time_ms": 19.486045092344284,
+      "time_per_mol_ms": 4.871511273086071,
+      "throughput_mol_per_sec": 205.2751074445336,
+      "std_ms": 0.3523578355997539
+    }
+  },
+  "speedups": {
+    "1": {
+      "speedup": 1.4512991628064418,
+      "time_reduction_pct": 31.096218779162278
+    },
+    "2": {
+      "speedup": 1.9024624493394262,
+      "time_reduction_pct": 47.436544655731815
+    },
+    "4": {
+      "speedup": 3.4170440794155263,
+      "time_reduction_pct": 70.73494000197252
+    }
+  }
+}

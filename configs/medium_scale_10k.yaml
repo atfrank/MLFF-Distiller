@@ -1,0 +1,83 @@
+# Medium-Scale 10K Generation Configuration
+# Issue #18: Medium-Scale Validation
+
+project_name: "medium_scale_10k"
+total_samples: 10000
+
+# Distribution across generative models
+distribution:
+  mattergen_crystals: 5000
+  moldiff_molecules: 4000
+  benchmark_traditional: 1000
+
+# Batch sizes optimized for GPU memory
+batch_size:
+  mattergen: 16  # GPU memory limited for crystal generation
+  moldiff: 32    # Molecular generation more efficient
+  benchmark: 50  # Traditional sampling is fast
+
+# Output configuration
+output_dir: "data/medium_scale_10k"
+checkpoint_interval: 500  # Save checkpoint every 500 structures
+save_individual_structures: true
+compress_output: false  # Speed over space during generation
+
+# Teacher model for labeling
+teacher_model: "orb-v2"
+teacher_batch_size: 8  # Conservative for force/energy/stress calculations
+device: "cuda"
+
+# Generation parameters
+mattergen:
+  pretrained_name: "mattergen_base"
+  num_atoms_range: [4, 50]
+  element_diversity: "full_periodic_table"
+  temperature: 1.0
+  top_k: null  # Use model defaults
+  environment_path: "envs/mattergen"
+  code_path: "external/mattergen"
+
+moldiff:
+  model_checkpoint: "external/MolDiff/ckpt/ckpt/full_moldiff.pt"
+  bond_predictor: "external/MolDiff/ckpt/ckpt/bond_predictor.pt"
+  num_atoms_range: [5, 50]
+  element_focus: ["C", "H", "N", "O", "S", "P", "F", "Cl", "Br"]
+  temperature: 1.0
+  environment_path: "envs/moldiff"
+  code_path: "external/MolDiff"
+
+benchmark:
+  source: "matbench_discovery_subset"
+  fallback_to_random: true  # If MatBench unavailable, use random stable structures
+  criteria: "known_stable"
+
+# Quality gates
+validation:
+  min_success_rate: 0.95  # 95% teacher labeling success required
+  min_diversity_entropy: 3.0  # Bits for element distribution
+  max_outlier_fraction: 0.05  # 5% outliers acceptable
+  energy_range_check: true
+  force_magnitude_check: true
+
+# Monitoring and logging
+logging:
+  log_file: "logs/10k_generation.log"
+  log_level: "INFO"
+  progress_interval: 100  # Log every 100 structures
+  validation_interval: 500  # Validate subset every 500 structures
+
+# Resource limits
+resources:
+  max_gpu_memory_gb: 11  # Leave 1GB buffer
+  max_runtime_hours: 48
+  checkpoint_on_error: true
+  resume_from_checkpoint: true
+
+# Output format
+output_format:
+  primary: "hdf5"
+  metadata: "json"
+  include_teacher_outputs: true
+  include_generation_metadata: true
+  compression: "gzip"  # For final HDF5
+  compression_level: 4

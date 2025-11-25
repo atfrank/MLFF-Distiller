@@ -1,0 +1,145 @@
+{
+  "config": {
+    "checkpoint": "checkpoints/best_model.pt",
+    "device": "cuda",
+    "timestamp": "2025-11-24 07:43:46",
+    "pytorch_version": "2.5.1+cu121",
+    "cuda_available": true,
+    "cuda_device": "NVIDIA GeForce RTX 3080 Ti"
+  },
+  "single_inference": {
+    "mean_time_ms": 22.31997437775135,
+    "std_time_ms": 0.8528871076189015,
+    "min_time_ms": 21.762751042842865,
+    "max_time_ms": 24.825606495141983,
+    "median_time_ms": 22.064577788114548,
+    "p95_time_ms": 23.69425408542156,
+    "n_samples": 10,
+    "by_size": {
+      "3": {
+        "mean_ms": 21.762751042842865,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "4": {
+        "mean_ms": 21.85671776533127,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "5": {
+        "mean_ms": 24.825606495141983,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "8": {
+        "mean_ms": 22.222019731998444,
+        "std_ms": 0.0,
+        "n_samples": 1
+      },
+      "11": {
+        "mean_ms": 21.94046787917614,
+        "std_ms": 0.014631077647209167,
+        "n_samples": 2
+      },
+      "12": {
+        "mean_ms": 22.162928245961666,
+        "std_ms": 0.1361431024286299,
+        "n_samples": 4
+      }
+    }
+  },
+  "batch_inference": {
+    "1": {
+      "mean_time_ms": 0.794827938079834,
+      "std_time_ms": 0.03068122339615481,
+      "time_per_structure_ms": 0.794827938079834,
+      "throughput_struct_per_sec": 1258.1339332583427,
+      "speedup_vs_batch1": 1.0
+    },
+    "2": {
+      "mean_time_ms": 43.6405211687088,
+      "std_time_ms": 0.09878304451065605,
+      "time_per_structure_ms": 21.8202605843544,
+      "throughput_struct_per_sec": 45.828966896803315,
+      "speedup_vs_batch1": 0.03642614326291515
+    },
+    "4": {
+      "mean_time_ms": 87.58081793785095,
+      "std_time_ms": 0.21827863054980626,
+      "time_per_structure_ms": 21.895204484462738,
+      "throughput_struct_per_sec": 45.67210142794598,
+      "speedup_vs_batch1": 0.03630146220574735
+    }
+  },
+  "memory_usage": {
+    "baseline_mb": 17.884765625,
+    "peak_mb": 21.77099609375,
+    "current_mb": 17.884765625,
+    "inference_overhead_mb": 3.88623046875
+  },
+  "scaling_analysis": {
+    "scaling_data": [
+      {
+        "n_atoms": 3,
+        "category": "small",
+        "mean_time_ms": 4.985992610454559,
+        "std_time_ms": 8.417787342167983,
+        "ms_per_atom": 1.6619975368181865
+      },
+      {
+        "n_atoms": 4,
+        "category": "small",
+        "mean_time_ms": 4.9812279641628265,
+        "std_time_ms": 8.391514436023328,
+        "ms_per_atom": 1.2453069910407066
+      },
+      {
+        "n_atoms": 5,
+        "category": "small",
+        "mean_time_ms": 5.03590926527977,
+        "std_time_ms": 8.49315691575238,
+        "ms_per_atom": 1.007181853055954
+      },
+      {
+        "n_atoms": 11,
+        "category": "medium",
+        "mean_time_ms": 5.016683042049408,
+        "std_time_ms": 8.463132738610781,
+        "ms_per_atom": 0.45606209473176434
+      },
+      {
+        "n_atoms": 12,
+        "category": "medium",
+        "mean_time_ms": 4.953700304031372,
+        "std_time_ms": 8.340419509068102,
+        "ms_per_atom": 0.412808358669281
+      },
+      {
+        "n_atoms": 12,
+        "category": "medium",
+        "mean_time_ms": 4.963101446628571,
+        "std_time_ms": 8.351958071795474,
+        "ms_per_atom": 0.41359178721904755
+      },
+      {
+        "n_atoms": 60,
+        "category": "large",
+        "mean_time_ms": 7.535667717456818,
+        "std_time_ms": 13.475697539658041,
+        "ms_per_atom": 0.12559446195761362
+      }
+    ]
+  },
+  "profiling": {
+    "total_events": 1,
+    "profiling_file": "/home/aaron/ATX/software/MLFF_Distiller/benchmarks/profiling_results.txt",
+    "top_5_operations": [
+      {
+        "name": "cudaDeviceSynchronize",
+        "cpu_time_us": 27.362999999999374,
+        "cuda_time_us": 0,
+        "calls": 1
+      }
+    ]
+  }
+}

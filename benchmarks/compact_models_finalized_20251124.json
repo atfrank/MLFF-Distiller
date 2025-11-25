@@ -1,0 +1,22 @@
+{
+  "validation": {
+    "Ultra-tiny (21K)": {
+      "energy_mae": 44847.78766741072,
+      "force_rmse": 214.37925454548426,
+      "force_rmse_std": 255.581104401898
+    }
+  },
+  "export": {},
+  "summary": {
+    "Ultra-tiny (21K)": {
+      "parameters": 21459,
+      "size_mb": 0.08185958862304688,
+      "validation": {
+        "energy_mae": 44847.78766741072,
+        "force_rmse": 214.37925454548426,
+        "force_rmse_std": 255.581104401898
+      },
+      "exported": false
+    }
+  }
+}
