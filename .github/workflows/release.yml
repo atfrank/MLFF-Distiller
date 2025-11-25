@@ -1,0 +1,184 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      test_pypi:
+        description: 'Publish to TestPyPI instead of PyPI'
+        required: false
+        default: 'true'
+        type: boolean
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Release
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-py3.11-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Run linting
+      run: |
+        pip install ruff
+        ruff check src tests
+
+    - name: Run unit tests
+      run: |
+        pytest tests/unit/ -v --tb=short
+
+    - name: Validate version tag matches pyproject.toml
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+        PYPROJECT_VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+        if [ "$TAG_VERSION" != "$PYPROJECT_VERSION" ]; then
+          echo "Version mismatch: tag=$TAG_VERSION, pyproject.toml=$PYPROJECT_VERSION"
+          exit 1
+        fi
+        echo "Version validated: $TAG_VERSION"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: validate
+    name: Build Package
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Check package
+      run: |
+        twine check dist/*
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+        retention-days: 30
+
+  publish-testpypi:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Publish to TestPyPI
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.test_pypi == 'true'
+    environment: testpypi
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        skip-existing: true
+
+  publish-pypi:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Publish to PyPI
+    if: startsWith(github.ref, 'refs/tags/v') && (github.event_name != 'workflow_dispatch' || github.event.inputs.test_pypi == 'false')
+    environment: pypi
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    runs-on: ubuntu-latest
+    needs: [build, publish-pypi]
+    name: Create GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Generate release notes
+      id: release_notes
+      run: |
+        VERSION="${GITHUB_REF#refs/tags/v}"
+        cat << 'EOF' > release_notes.md
+        ## MLFF Distiller v${{ github.ref_name }}
+
+        ### Installation
+
+        ```bash
+        pip install mlff-distiller==$VERSION
+        ```
+
+        Or install from TestPyPI for pre-releases:
+        ```bash
+        pip install --index-url https://test.pypi.org/simple/ mlff-distiller
+        ```
+
+        ### What's Changed
+
+        See the [CHANGELOG](https://github.com/atfrank/MLFF_Distiller/blob/main/CHANGELOG.md) for details.
+
+        ### Full Changelog
+
+        https://github.com/atfrank/MLFF_Distiller/compare/...v$VERSION
+        EOF
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        body_path: release_notes.md
+        files: dist/*
+        draft: false
+        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+        generate_release_notes: true

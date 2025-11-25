@@ -94,6 +94,7 @@ class TestForceFieldLoss:
             energy_weight=1.0,
             force_weight=100.0,
             stress_weight=0.0,
+            angular_weight=0.0,  # Disable angular loss for simpler expected total calculation
         )
 
         batch_size = 4
@@ -115,7 +116,7 @@ class TestForceFieldLoss:
         assert "energy_rmse" in loss_dict
         assert "force_rmse" in loss_dict
 
-        # Total should be weighted sum
+        # Total should be weighted sum (energy + force only, angular disabled)
         expected_total = (
             1.0 * loss_dict["energy"] + 100.0 * loss_dict["force"]
         )

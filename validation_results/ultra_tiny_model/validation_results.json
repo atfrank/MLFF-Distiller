@@ -1,0 +1,80 @@
+{
+  "0": {
+    "mol_name": "0",
+    "n_atoms": 22,
+    "formula": "C19N2O",
+    "simulation_completed": true,
+    "failure_mode": null,
+    "error_message": null,
+    "steps_completed": 4000,
+    "energy_metrics": {
+      "initial_energy": -160.0109,
+      "final_energy": -145.8107,
+      "drift_pct": 8.87,
+      "max_drift_pct": 8.9,
+      "drift_rate_per_ps": 4.44,
+      "passed": false,
+      "threshold": 1.0
+    },
+    "numerical_check": {
+      "energy_nan": false,
+      "energy_inf": false,
+      "force_nan": false,
+      "has_numerical_issues": false
+    }
+  },
+  "4": {
+    "mol_name": "4",
+    "n_atoms": 25,
+    "formula": "C22NO2",
+    "simulation_completed": true,
+    "failure_mode": null,
+    "error_message": null,
+    "steps_completed": 10000,
+    "energy_metrics": {
+      "initial_energy": -181.0868,
+      "final_energy": -172.5948,
+      "drift_pct": 4.69,
+      "max_drift_pct": 4.74,
+      "drift_rate_per_ps": 0.94,
+      "passed": false,
+      "threshold": 1.0
+    },
+    "numerical_check": {
+      "energy_nan": false,
+      "energy_inf": false,
+      "force_nan": false,
+      "has_numerical_issues": false
+    }
+  },
+  "9": {
+    "mol_name": "9",
+    "n_atoms": 32,
+    "formula": "C26N3O3",
+    "simulation_completed": true,
+    "failure_mode": null,
+    "error_message": null,
+    "steps_completed": 4000,
+    "energy_metrics": {
+      "initial_energy": -229.1371,
+      "final_energy": -216.4756,
+      "drift_pct": 5.53,
+      "max_drift_pct": 5.81,
+      "drift_rate_per_ps": 2.76,
+      "passed": false,
+      "threshold": 1.0
+    },
+    "numerical_check": {
+      "energy_nan": false,
+      "energy_inf": false,
+      "force_nan": false,
+      "has_numerical_issues": false
+    }
+  },
+  "_model_info": {
+    "total_parameters": 21459,
+    "checkpoint_path": "/home/aaron/ATX/software/MLFF_Distiller/checkpoints/ultra_tiny_model/best_model.pt",
+    "compression_ratio": "19.9x vs Original (427K)",
+    "force_r2": 0.1499
+  }
+}

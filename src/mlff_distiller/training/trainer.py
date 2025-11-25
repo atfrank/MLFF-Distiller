@@ -356,7 +356,7 @@ class Trainer:
 
                 # Log metrics
                 if self.global_step % self.config.logging.log_interval == 0:
-                    log_dict = {k: v.item() if isinstance(v, torch.Tensor) else v for k, v in loss_dict.items()}
+                    log_dict = {k: (v.mean().item() if v.numel() > 1 else v.item()) if isinstance(v, torch.Tensor) else v for k, v in loss_dict.items()}
                     log_dict["lr"] = self.optimizer.param_groups[0]["lr"]
                     if grad_norm is not None:
                         log_dict["grad_norm"] = grad_norm.item() if isinstance(grad_norm, torch.Tensor) else grad_norm
@@ -365,16 +365,26 @@ class Trainer:
             # Accumulate metrics
             for key, value in loss_dict.items():
                 if isinstance(value, torch.Tensor):
-                    value = value.item()
+                    # Handle multi-element tensors by taking mean before converting to scalar
+                    if value.numel() > 1:
+                        value = value.mean().item()
+                    else:
+                        value = value.item()
                 if key not in epoch_metrics:
                     epoch_metrics[key] = 0.0
                 epoch_metrics[key] += value
             num_batches += 1
 
             # Update progress bar
+            total_loss = loss_dict["total"]
+            total_loss_val = (total_loss.mean().item() if total_loss.numel() > 1 else total_loss.item()) * self.config.accumulation_steps
+            force_rmse_val = 0.0
+            if "force_rmse" in loss_dict:
+                force_rmse = loss_dict["force_rmse"]
+                force_rmse_val = force_rmse.mean().item() if force_rmse.numel() > 1 else force_rmse.item()
             progress_bar.set_postfix({
-                "loss": loss_dict["total"].item() * self.config.accumulation_steps,
-                "force_rmse": loss_dict.get("force_rmse", 0.0).item() if "force_rmse" in loss_dict else 0.0,
+                "loss": total_loss_val,
+                "force_rmse": force_rmse_val,
             })
 
         # Average metrics
@@ -406,7 +416,11 @@ class Trainer:
             # Accumulate metrics
             for key, value in loss_dict.items():
                 if isinstance(value, torch.Tensor):
-                    value = value.item()
+                    # Handle multi-element tensors by taking mean before converting to scalar
+                    if value.numel() > 1:
+                        value = value.mean().item()
+                    else:
+                        value = value.item()
                 if key not in epoch_metrics:
                     epoch_metrics[key] = 0.0
                 epoch_metrics[key] += value

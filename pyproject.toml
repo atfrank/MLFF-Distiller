@@ -66,6 +66,11 @@ Documentation = "https://github.com/atfrank/MLFF_Distiller/docs"
 Repository = "https://github.com/atfrank/MLFF_Distiller"
 Issues = "https://github.com/atfrank/MLFF_Distiller/issues"
 
+[project.scripts]
+mlff-train = "mlff_distiller.cli.main:train"
+mlff-validate = "mlff_distiller.cli.main:validate"
+mlff-benchmark = "mlff_distiller.cli.main:benchmark"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

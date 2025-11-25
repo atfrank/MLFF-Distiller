@@ -208,12 +208,17 @@ class ForceFieldLoss(nn.Module):
                 losses["force_rmse"] = torch.sqrt(force_mse)
                 losses["force_mae"] = F.l1_loss(pred_forces, target_forces, reduction="mean")
                 # Component-wise RMSE for detailed analysis
-                if pred_forces.dim() >= 2:
-                    force_mse_per_component = ((pred_forces - target_forces) ** 2).mean(dim=0)
-                    if force_mse_per_component.numel() >= 3:
-                        losses["force_rmse_x"] = torch.sqrt(force_mse_per_component[0])
-                        losses["force_rmse_y"] = torch.sqrt(force_mse_per_component[1])
-                        losses["force_rmse_z"] = torch.sqrt(force_mse_per_component[2])
+                if pred_forces.dim() >= 2 and pred_forces.shape[-1] == 3:
+                    # Compute MSE per component (x, y, z) by flattening batch and atom dims
+                    # pred_forces: (batch, n_atoms, 3) -> compute MSE along axis 0 and 1
+                    diff_sq = (pred_forces - target_forces) ** 2
+                    # Mean over all but last dimension to get per-component MSE
+                    force_mse_x = diff_sq[..., 0].mean()
+                    force_mse_y = diff_sq[..., 1].mean()
+                    force_mse_z = diff_sq[..., 2].mean()
+                    losses["force_rmse_x"] = torch.sqrt(force_mse_x)
+                    losses["force_rmse_y"] = torch.sqrt(force_mse_y)
+                    losses["force_rmse_z"] = torch.sqrt(force_mse_z)
 
         # Stress loss (for NPT simulations)
         if "stress" in predictions and "stress" in targets and self.stress_weight > 0:
@@ -352,14 +357,18 @@ class ForceLoss(nn.Module):
             "force_mae": mae,
         }
 
-        # Component-wise metrics (only if forces are 2D)
+        # Component-wise metrics (only if forces have 3 components in last dim)
         with torch.no_grad():
-            if pred_forces.dim() >= 2:
-                force_mse_per_component = ((pred_forces - target_forces) ** 2).mean(dim=0)
-                if force_mse_per_component.numel() >= 3:
-                    result["force_rmse_x"] = torch.sqrt(force_mse_per_component[0])
-                    result["force_rmse_y"] = torch.sqrt(force_mse_per_component[1])
-                    result["force_rmse_z"] = torch.sqrt(force_mse_per_component[2])
+            if pred_forces.dim() >= 2 and pred_forces.shape[-1] == 3:
+                # Compute MSE per component (x, y, z) by flattening batch and atom dims
+                diff_sq = (pred_forces - target_forces) ** 2
+                # Mean over all but last dimension to get per-component MSE
+                force_mse_x = diff_sq[..., 0].mean()
+                force_mse_y = diff_sq[..., 1].mean()
+                force_mse_z = diff_sq[..., 2].mean()
+                result["force_rmse_x"] = torch.sqrt(force_mse_x)
+                result["force_rmse_y"] = torch.sqrt(force_mse_y)
+                result["force_rmse_z"] = torch.sqrt(force_mse_z)
 
         return result
 
